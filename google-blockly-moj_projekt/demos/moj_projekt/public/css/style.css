@@ -1,0 +1,18 @@
+body{
+    background-color: #fff;
+    font-family: sans-serif;
+}
+h1 {
+    font-weight: normal;
+    font-size: 140%;
+}
+.alert-error{
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #edccd1;
+}
+.alert-success_msg{
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}

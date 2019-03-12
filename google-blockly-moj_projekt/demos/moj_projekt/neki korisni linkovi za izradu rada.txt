@@ -1,0 +1,19 @@
+https://stackoverflow.com/questions/11473607/node-js-express-js-what-is-the-easiest-way-to-serve-a-single-static-file
+
+https://github.com/expressjs/serve-static/issues/89
+
+https://expressjs.com/en/api.html#express.static
+
+https://hype.codes/how-include-js-file-another-js-file
+
+https://stackoverflow.com/questions/33201595/cannot-access-content-of-html-in-by-using-node-js-server
+
+https://codeforgeek.com/2015/01/render-html-file-expressjs/
+
+http://www.passportjs.org/docs/authenticate/ - passport documentation
+
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoose
+
+https://mongoosejs.com/docs/populate.html - populate databases je dio koji æe eventualno trebati
+
+https://mongoosejs.com/docs/ - cijela dokumentacija je bitna

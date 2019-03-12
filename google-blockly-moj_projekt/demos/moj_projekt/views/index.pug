@@ -1,0 +1,11 @@
+extends layout
+
+
+block content
+    br
+    h1 Blocks:
+    ul.list-group
+        each block, i in blocks
+            li.list-group-item 
+                a(href="/blocks/"+block._id)= block.name
+            br

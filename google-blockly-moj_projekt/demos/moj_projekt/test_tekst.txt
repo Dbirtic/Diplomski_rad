@@ -1,0 +1,4 @@
+function myFunction2() { alert("I am an alert box!"); }
+
+
+window.alert("Hey ho! Lets go!");	/*prints out "hey ho! lets go!"*/

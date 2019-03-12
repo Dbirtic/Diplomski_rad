@@ -1,0 +1,19 @@
+// attempt to load blocks from database
+router.get('/blocks', function(req, res){
+  console.log("gettin' all them blocks");
+  Block.find({})
+   .exec(function(err, blocks){
+     if(err){
+       console.log(err);
+     }
+     else{
+       console.log(blocks);
+       res.json(blocks);
+     }
+   });
+});
+app.use('/blocks', router);
+
+a.nav-item.nav-link.disabled(href='#', tabindex='-1', aria-disabled='true') Disabled
+
+<a class="nav-item nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>

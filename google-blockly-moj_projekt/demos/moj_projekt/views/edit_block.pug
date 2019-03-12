@@ -1,0 +1,16 @@
+extends layout
+
+
+block content
+    br
+    h1 #{title}
+    form(method='POST', action='/blocks/edit/'+block._id)
+        #form-group
+            label Name:
+            input.form-control(name='name', type='text', value=block.name)
+        br
+        #form-group
+            label Content:
+            textarea.form-control(name='content', rows=10)= block.content
+        br
+        input.btn.btn-primary(type='submit', value='Submit')

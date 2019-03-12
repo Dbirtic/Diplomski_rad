@@ -1,0 +1,13 @@
+znaèi: node.js ima 'fs' biblioteku za pristup file systemu operacijskog sustava
+
+ima fs.writeFile(file, data[, options], callback) funkciju s kojom asinkrono pišemo podatak u datoteku, 
+zamjenjujuæi datoteku ako veæ postoji.
+ima i fs.appendFile(path, data[, options], callback) koji asinkrono dodaje podatke u datoteku i stvara datoteku ako ne
+postoji.
+
+konto sam napraviti prvu polovicu index.html koja parsira sadašnji index.html i donju polovicu index.html-a koja poèinje 
+zadnjim xml tag-om i sadrži script i onaj div s copyright-om i s zatvarajuæim body i html tag-ovima.
+
+i izmeðu ta dva dijela unesem <block type="neki blok"></block> za uneseni blok.
+
+nadam se da æe to raditi.
