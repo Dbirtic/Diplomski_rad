@@ -17,3 +17,7 @@ https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoo
 https://mongoosejs.com/docs/populate.html - populate databases je dio koji æe eventualno trebati
 
 https://mongoosejs.com/docs/ - cijela dokumentacija je bitna
+
+https://cheerio.js.org/ - bitno
+
+https://nodejs.org/docs/v0.4.12/api/all.html#modules - takoðe bitno

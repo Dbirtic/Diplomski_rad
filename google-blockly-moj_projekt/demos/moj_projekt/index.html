@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
+<!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <title>Diplomski</title>
   
@@ -11,22 +9,22 @@
   <script src="../../javascript_compressed.js"></script>
   <script src="../../msg/js/en.js"></script>
   <script src="../../python_compressed.js"></script>
-  <script src='/load_blocks'></script>
+  <script src="/load_blocks"></script>
   <!-- <script src="customBlocks.js"></script> -->
   <!-- <script src="app.js"></script> -->
   <!-- <script scr="test_block.js"></script> -->
 
   <!-- Bootstrap/CSS headers -->
-  <link href='/bower_components/bootstrap/dist/css/bootstrap.css' rel='stylesheet'>
-  <link rel='stylesheet' href='/css/style.css'>
-  <script src='/bower_components/jquery/dist/jquery.js'></script>
-  <script src='/bower_components/bootstrap/dist/js/bootstrap.js'></script>
+  <link href="/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
 
   
 
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"><a class="navbar-brand" href="/"">Blockly</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"><a class="navbar-brand" href="/" ">Blockly</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav"><a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a><a class="nav-item nav-link" href="/add_blocks">Add Block</a><a class="nav-item nav-link" href="/blocks">List of Added Blocks</a></div>
@@ -38,8 +36,8 @@
     <p style="text-align: center;">
         <button onclick="showCode()">Show Python</button>
         <button onclick="runCode()">Run JavaScript</button>
-        <a href="javascript:void(0)" id="a"><button onclick="saveCode()" >Save Python</button></a>
-        <a href="javascript:void(0)" id="b"><button onclick="saveText()" >Save Text</button></a>
+        <a href="javascript:void(0)" id="a"><button onclick="saveCode()">Save Python</button></a>
+        <a href="javascript:void(0)" id="b"><button onclick="saveText()">Save Text</button></a>
     </p>
     
     <div class="blockly-editor">
@@ -111,7 +109,7 @@
               <block type="text_join"></block>
         </category>
 
-        <category name="Test" colour="#00aa44">
+        <category name="Test" colour="#00aa44" id="test">
             <block type="test_block"></block>
             <block type="test_block2"></block>
             <block type="citac_pythona"></block>
@@ -155,7 +153,24 @@
               </value>
             </block>
             
-        </category>
+            <block type="import_custom">
+              <field name="import_value">Utils.API_Diagnostic</field>
+              <next>
+                <block type="check_dtc_status">
+                  <value name="dtc">
+                    <block type="text">
+                      <field name="TEXT"></field>
+                    </block>
+                  </value>
+                  <value name="errorID">
+                    <block type="math_number">
+                      <field name="NUM">0</field>
+                    </block>
+                  </value>
+                </block>
+              </next>
+            </block>
+</category>
 </xml>
 
 <script>
@@ -235,8 +250,8 @@
     }
 </script>
 <div class="footer">
-    <p>Copyright &copy; 2019</p>
+    <p>Copyright &#xA9; 2019</p>
 </div>
 
-</body>
-</html>
+
+</body></html>

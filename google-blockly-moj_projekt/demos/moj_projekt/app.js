@@ -6,6 +6,7 @@ const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
 const fs = require('fs');
+const cheerio = require('cheerio');
 
 const router = express.Router();
 
@@ -85,7 +86,6 @@ app.use(express.static('C:/Users/Dominik/Desktop/google-blockly-moj_projekt/'));
 router.get('/load_blocks', function(req, res){
   // query which finds all blocks inside collection
   Block.find({}).select('content -_id').exec(function(err, blocks){
-    var strings = [];
     if(err){
       console.log(err);
     }
@@ -103,7 +103,6 @@ router.get('/',function(req, res){
 });
 app.use('/', router);
 
-var first_half = '';
 
 // Get Single Block
 app.get('/blocks/:id', function(req, res){
@@ -140,6 +139,24 @@ app.post('/add_blocks', function(req, res){
     let block = new Block(); // stvara objekt koji je model Block
     block.name = req.body.name; // sprema name iz onoga sto je uneseno na stranici
     block.content = req.body.content; // sprema content iz onoga sto je uneseno na stranici
+
+    fs.readFile('./index.html', 'utf8', function(err, data) {
+
+      if (err){ 
+        throw err;
+      }
+      
+      // ucitavanje html-a i unos novog bloka u html
+      var $ = cheerio.load(data);
+      $('#test').append('<block type="'+block.name+'" class="'+block.name+'"></block>').append('\n');
+      console.log($.html());
+      fs.writeFile('./index.html', $.html(), function(err){
+        if(err){
+          console.log(err);
+        }
+        console.log("Unos novog bloka i pisanje novog index.html-a je bio uspjesan!");
+      });
+    });
 
     block.save(function(err){
       if(err)
@@ -191,11 +208,32 @@ app.post('/blocks/edit/:id', function(req, res){
 app.delete('/blocks/:id', function(req, res){
   let query = {_id:req.params.id};
 
+  Block.findById(req.params.id, function(err, block){
+    if(err) {
+      console.log(err);
+    }
+    else{
+    fs.readFile('./index.html', 'utf8', function(err, data) {
+      if (err){ 
+        throw err;
+      }
+      var $ = cheerio.load(data);
+      
+      $('.'+block.name).remove();
+      fs.writeFile('./index.html', $.html(), function(err){
+        if(err){
+          console.log(err);
+        }
+        console.log("Brisanje bloka "+block.name+" i pisanje novog index.html-a je bila uspjesna!");
+      });
+    });
+  } // kraj else bloka
+  }); // kraj findById bloka
+
   Block.deleteOne(query, function(err){
     if(err){
       console.log(err);
     }
-    res.send('Success');
   });
 });
 
