@@ -6,7 +6,7 @@ $(document).ready(function(){
             type: 'DELETE',
             url: '/blocks/'+id,
             success: function(response){
-                alert('Deleting Block');
+                alert('Deleting block!');
                 window.location.href='/';
             },
             error: function(err){
