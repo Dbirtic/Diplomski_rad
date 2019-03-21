@@ -1,2 +1,0 @@
-buduæi da se preko nodeJS servera ne može uèitati Blockly JS skripte koje mi trebaju kada uèitava HTML, onda trebam
-naæi naèin kako uèitati druge JavaScript skripte u nodeJS i expressJS server i XML u JavaScript
