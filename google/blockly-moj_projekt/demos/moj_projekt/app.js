@@ -7,6 +7,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const fs = require('fs');
 const cheerio = require('cheerio');
+const serveStatic = require('serve-static');
 
 const router = express.Router();
 
@@ -81,7 +82,8 @@ app.use(expressValidator({
 
 // "sluzenje"/"serviranje" blockly dokumenata kako bi Blockly i njegovo sučelje radili
 app.use(express.static('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/'));
-
+//app.use(express.static('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/workspacefactory/'));
+//app.use(express.static());
 
 // Loading Custom Blocks
 router.get('/load_blocks', function(req, res){
@@ -106,7 +108,8 @@ app.use('/', router);
 
 // Get Block Factory or Blockly Developer Tools
 app.get('/block_factory', function(req, res){
-  res.sendFile()
+  //console.log(pathToBlockFactory);
+  res.sendFile('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/block-factory_index.html');
 });
 
 // Get Single Block
