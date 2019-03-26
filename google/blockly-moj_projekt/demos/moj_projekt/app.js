@@ -267,9 +267,23 @@ app.get('/blocks', function(req, res){
   });
 });
 
-function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};
+// Python Parser Route
+app.get('/py_parse', function(req, res){
+  res.render('py_parser',{
+    title:'Python Parser'
+  });
+});
+
+// Python Parser POST Route
+app.post('/py_parse', function(req, res){
+  //block.name = req.body.name; // sprema name iz onoga sto je uneseno na stranici
+  //block.content = req.body.content; // sprema content iz onoga sto je uneseno na stranici
+
+  // search funkcija traži određen string unutar stringa i vraća broj gdje se pocinje taj podstring
+  // slice funkcija prima dva broja koja označavaju pocetnu i krajnju tocku stringa
+  // split je dobre sugestije
+  
+});
 
 // Start Server
 app.listen(8888, function(){
