@@ -82,8 +82,6 @@ app.use(expressValidator({
 
 // "sluzenje"/"serviranje" blockly dokumenata kako bi Blockly i njegovo sučelje radili
 app.use(express.static('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/'));
-//app.use(express.static('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/workspacefactory/'));
-//app.use(express.static());
 
 // Loading Custom Blocks
 router.get('/load_blocks', function(req, res){
@@ -108,7 +106,14 @@ app.use('/', router);
 
 // Get Block Factory or Blockly Developer Tools
 app.get('/block_factory', function(req, res){
-  //console.log(pathToBlockFactory);
+  // serving static files for the Block Factory file
+  app.use(serveStatic(path.join(__dirname + './closure-library/closure/goog/base.js')));
+  app.use(serveStatic(path.join(__dirname, './blockfactory/')));
+  app.use(serveStatic(path.join(__dirname, './blockfactory/workspacefactory/')));
+  app.use(serveStatic('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/appengine/storage.js'));
+  app.use(serveStatic('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/msg/js/'));
+
+  // sending block-factory_index.html to the client
   res.sendFile('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/block-factory_index.html');
 });
 

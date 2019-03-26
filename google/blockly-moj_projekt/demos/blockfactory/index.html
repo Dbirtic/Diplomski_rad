@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="target-densitydpi=device-dpi, height=660, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Diplomski</title>
+  <title>Blockly Demo: Blockly Developer Tools</title>
   <script src="../../blockly_compressed.js"></script>
   <script src="../../javascript_compressed.js"></script>
   <script src="../../msg/js/en.js"></script>
@@ -28,16 +28,9 @@
   <script src="block_exporter_controller.js"></script>
   <script src="blocks.js"></script>
   <script src="app_controller.js"></script>
-  <script src="../../appengine/storage.js"></script>
+  <script src="/storage.js"></script>
   <link rel="stylesheet" href="factory.css">
-
-  <!-- Bootstrap/CSS headers -->
-  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="/bower_components/jquery/dist/jquery.js"></script>
-  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  
-  
+  <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
   <script>
     var blocklyFactory;
     var init = function() {
@@ -51,17 +44,7 @@
   </script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"><a class="navbar-brand" href="/" ">Blockly</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-item nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-          <a class="nav-item nav-link" href="/add_blocks">Add Block</a>
-          <a class="nav-item nav-link" href="/blocks">List of Added Blocks</a>
-          <a class="nav-item nav-link" href='/block_factory'>Block Factory</a>
-      </div>
-    </nav>
-  <!-- <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
     <a href="../index.html">Demos</a> &gt; Blockly Developer Tools
     <button id="helpButton" title="View documentation in new window.">
       <span>Help</span>
@@ -71,10 +54,9 @@
     <div id="blockFactory_tab" class="tab tabon">Block Factory</div>
     <div id="blocklibraryExporter_tab" class="tab taboff">Block Exporter</div>
     <div id="workspaceFactory_tab" class="tab taboff">Workspace Factory</div>
-  </div> -->
+  </div>
 
   <!-- Exporter tab -->
-  
   <div id="blockLibraryExporter">
     <br>
     <p>
@@ -109,7 +91,7 @@
         <div id="blockDefSettings" class="subsettings">
           <label>Format:
           <select id="exportFormat">
-          <!--  <option value="JSON">JSON</option> -->
+            <option value="JSON">JSON</option>
             <option value="JavaScript">JavaScript</option>
           </select></label>
           <br>
@@ -122,11 +104,11 @@
         <div id="genStubSettings" class="subsettings">
           <label>Language:
           <select id="exportLanguage">
-          <!--  <option value="JavaScript">JavaScript</option> -->
+            <option value="JavaScript">JavaScript</option>
             <option value="Python">Python</option>
-          <!--  <option value="PHP">PHP</option> -->
-          <!--  <option value="Lua">Lua</option> -->
-          <!--  <option value="Dart">Dart</option> -->
+            <option value="PHP">PHP</option>
+            <option value="Lua">Lua</option>
+            <option value="Dart">Dart</option>
           </select></label>
           <br>
           <label>File Name:<br>
@@ -376,9 +358,9 @@
                 <!-- TODO(#1268): Separate concerns of format and editable.
                   -               Add "Editable" state toggle button? -->
                 <select id="format">
-                <!--  <option value="JSON">JSON</option> -->
+                  <option value="JSON">JSON</option>
                   <option value="JavaScript">JavaScript</option>
-                <!--  <option value="Manual-JSON">Manual JSON&hellip;</option> -->
+                  <option value="Manual-JSON">Manual JSON&hellip;</option>
                   <script>
                     // Manual JavaScript works but requires use of eval().
                     // TODO(#1269): Replace eval() with JS-Interpreter before
@@ -402,11 +384,11 @@
             <td height="5%">
               <h3>Generator stub:
                 <select id="language">
-                <!--  <option value="JavaScript">JavaScript</option> -->
+                  <option value="JavaScript">JavaScript</option>
                   <option value="Python">Python</option>
-                <!--  <option value="PHP">PHP</option> -->
-                <!--  <option value="Lua">Lua</option> -->
-                <!--  <option value="Dart">Dart</option> -->
+                  <option value="PHP">PHP</option>
+                  <option value="Lua">Lua</option>
+                  <option value="Dart">Dart</option>
                 </select>
               </h3>
             </td>

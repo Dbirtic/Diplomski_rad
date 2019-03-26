@@ -20,36 +20,10 @@
 
   function handlePlay(event) {
     // Add code for playing sound.
-    loadWorkspace(event.target);
-    Blockly.JavaScript.addReservedWords('code');
-    var code = Blockly.JavaScript.workspaceToCode(Blockly.getMainWorkspace());
-    code += 'MusicMaker.play();';
-    // Eval can be dangerous. For more controlled execution, check
-    // https://github.com/NeilFraser/JS-Interpreter.
-    try{
-      eval(code);
-    }
-    catch (error)
-    {
-      console.log(error);
-    }
-  }
-
-  function loadWorkspace(button)
-  {
-    let workspace = Blockly.getMainWorkspace();
-    workspace.clear();
-    if(button.blocklyXml)
-    {
-      Blockly.Xml.domToWorkspace(button.blocklyXml, workspace);
-    }
   }
 
   function save(button) {
     // Add code for saving the behavior of a button.
-
-    let xml = Blockly.Xml.workspaceToDom(Blockly.getMainWorkspace());
-    button.blocklyXml = xml;
   }
 
   function handleSave() {
@@ -76,7 +50,6 @@
   function enableBlocklyMode(e) {
     document.body.setAttribute('mode', 'blockly');
     currentButton = e.target;
-    loadWorkspace(currentButton);
   }
 
   document.querySelector('#edit').addEventListener('click', enableEditMode);
@@ -85,12 +58,4 @@
 
   enableMakerMode();
 
-  Blockly.inject('blockly-div', 
-  {
-    media: '../../../media/',
-    toolbox: document.getElementById('toolbox'),
-    toolboxPosition: 'end',
-    horizontalLayout: true,
-    scrollbars: false
-  });
 })();
