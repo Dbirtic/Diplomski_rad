@@ -1,0 +1,18 @@
+Instalirati nodejs prije svega, otiæi u ..\google\blockly-moj_projekt\demos\moj_projekt i pokrenuti naredbu "npm install"
+u git bash prozoru u tom folderu kako bi se instalirali svi moduli potrebni za web aplikaciju.
+
+Instalirati MongoDB bazu podataka tako što se prvo skine s njihove stranice instaler, 
+zatim se instalira u root direktorij particije npr. C:\mongodb , 
+zatim se napravi novi folder u toj mapi koji se zove data gdje æe biti baze podataka.
+Nakon toga se uðe u /bin folder i pokrene se command prompt kao administrator te se pokrene mongod. 
+Instrukcije za pokretanje baze kao servis se mogu pronaæi na internetu, 
+no ja sam koristio https://www.youtube.com/watch?v=k_0ZzvHbNBQ kao uputu kako to sve instalirati i podesiti.
+
+Nakon instalacije baze podataka treba kopirati /data folder koji je na gitu i kopirati ga u vaš mongodb folder kako bi
+dobili kolekcije s blokovima i kolekciju koju aplikacija koristi. Kolekcije (collection) su ekvivalenti tablica u MySQL
+bazi podataka. Buduæi da je MongoDB NoSQL baza podataka orijentirana na dokumente onda ona koristi kolekcije.
+
+Nakon što je podignut MongoDB kao servis i instalirani su svi moduli koje web aplikacija koristi, onda odete u folder u
+kojem se nalazi aplikacija -> ..\google\blockly-moj_projekt\demos\moj_projekt i u git bash prozoru upišete "nodemon" i 
+saèekate da se digne lokalni server na adresi localhost:8888 i da se spoji na bazu podataka.
+
