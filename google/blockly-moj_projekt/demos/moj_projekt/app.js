@@ -8,6 +8,7 @@ const session = require('express-session');
 const fs = require('fs');
 const cheerio = require('cheerio');
 const serveStatic = require('serve-static');
+const S = require('string');
 
 const router = express.Router();
 
@@ -276,13 +277,28 @@ app.get('/py_parse', function(req, res){
 
 // Python Parser POST Route
 app.post('/py_parse', function(req, res){
-  //block.name = req.body.name; // sprema name iz onoga sto je uneseno na stranici
-  //block.content = req.body.content; // sprema content iz onoga sto je uneseno na stranici
+  let py_code = req.body.code; // parsira kod iz textarea
+  let tag = "_x_"; // varijabla za oznaku koja ce se koristiti za pronalaženje varijable
+  var position; // varijabla koja je broj koji označava lokaciju u stringu, tj. u kodu koji ce se unijeti
+  var var_names = []; // niz u koji ćemo upisivati nazive varijabli
 
-  // search funkcija traži određen string unutar stringa i vraća broj gdje se pocinje taj podstring
+  //position = py_code.search(tag); // trazenje i unos položaja oznake
+  //console.log(position);
+  var_names = S(py_code).splitLeft(tag);
+  var_names = S(var_names).strip(' ', '10', 'print', '+', '=', '5');
+  //var_names.push(py_code.slice(position+3, py_code.indexOf(' '))); // unos naziva varijabli u niz
+  console.log(var_names);
+  console.log(var_names.length); // da mi da je duljina 46
+  // čini mi se da ću morati napraviti ili neko grananje za svaku varijablu ili nekakvu petlju
+  for(var i = 0; i<var_names.length;i++)
+    console.log(var_names[i]); // ispisuje undefined
+  // search funkcija traži određen substring unutar stringa i vraća broj gdje pocinje taj podstring
   // slice funkcija prima dva broja koja označavaju pocetnu i krajnju tocku stringa
-  // split je dobre sugestije
-  
+  // split je dobra sugestija
+  res.render('py_parser',{
+    title:'Python Parser',
+    variable: var_names
+  });
 });
 
 // Start Server

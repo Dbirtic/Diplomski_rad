@@ -8,6 +8,8 @@ block content
     form(method='POST', action='/py_parse')
         #form-group
             label Python code:
-            textarea.form-control(name='code', rows=10)
+            textarea.form-control(name='code', rows=5)
+        p #{variable}
         br
         input.btn.btn-dark(type='submit', value='Submit')
+        
