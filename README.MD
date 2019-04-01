@@ -1,5 +1,5 @@
-##Croatian instalation instructions
-Instalirati nodejs prije svega, otići u ..\google\blockly-moj_projekt\demos\moj_projekt i pokrenuti naredbu "npm install"
+## Croatian instalation instructions
+Instalirati nodejs, zatim otići u ..\google\blockly-moj_projekt\demos\moj_projekt i pokrenuti naredbu "npm install"
 u git bash prozoru u tom folderu kako bi se instalirali svi moduli potrebni za web aplikaciju.
 
 Instalirati MongoDB bazu podataka tako što se prvo skine s njihove stranice instaler, zatim se instalira u root direktorij particije npr. C:\mongodb , zatim se napravi novi folder u toj mapi koji se zove "data" gdje će biti baze podataka. Nakon toga se uđe u /bin folder i pokrene se command prompt kao administrator te se pokrene mongod. Instrukcije za pokretanje baze kao servis se mogu pronaći na internetu, no ja sam koristio https://www.youtube.com/watch?v=k_0ZzvHbNBQ kao uputu kako to sve instalirati i podesiti.
@@ -8,8 +8,8 @@ Nakon instalacije baze podataka treba kopirati /data folder koji je na gitu i ko
 
 Nakon što je podignut MongoDB kao servis i instalirani su svi moduli koje web aplikacija koristi, onda odite u folder u kojem se nalazi aplikacija -> ..\google\blockly-moj_projekt\demos\moj_projekt i u git bash prozoru upišete "nodemon" i sačekate da se digne lokalni server na adresi localhost:8888 i da se spoji na bazu podataka.
 
-##English instalation instructions
-Install first of all nodejs then go to ..\google\blockly-my_project\demos\my_project and run the command "npm install" in the git bash window in that folder to install all the modules required for the web application.
+## English instalation instructions
+Install nodejs then go to ..\google\blockly-my_project\demos\my_project and run the command "npm install" in the git bash window in that folder to install all the modules required for the web application.
 
 Install the MongoDB database by first downloading it from their installer page, then installing it into the root partition directory eg C:\mongodb, then create a new folder in that folder called "data" where the database will be. Then enter the /bin folder and launch the command prompt as an administrator and start mongod. Instructions for running database as a service can be found on the Internet, but I used https://www.youtube.com/watch?v=k_0ZzvHbNBQ as a guide to installing and configuring it all.
 
