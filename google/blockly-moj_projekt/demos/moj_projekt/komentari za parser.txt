@@ -1,0 +1,5 @@
+// search funkcija traži odreðen substring unutar stringa i vraæa broj gdje pocinje taj podstring
+// slice funkcija prima dva broja koja oznaèavaju pocetnu i krajnju tocku stringa
+// split je dobra sugestija
+
+// èini mi se da æu morati napraviti ili neko grananje za svaku varijablu ili nekakvu petlju

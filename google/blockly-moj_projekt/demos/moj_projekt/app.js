@@ -9,6 +9,7 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 const serveStatic = require('serve-static');
 const S = require('string');
+const replaceString = require('replace-string');
 
 const router = express.Router();
 
@@ -281,25 +282,82 @@ app.post('/py_parse', function(req, res){
   let tag = "_x_"; // varijabla za oznaku koja ce se koristiti za pronalaženje varijable
   var position; // varijabla koja je broj koji označava lokaciju u stringu, tj. u kodu koji ce se unijeti
   var var_names = []; // niz u koji ćemo upisivati nazive varijabli
+  var py_code2, py_code3;
 
-  //position = py_code.search(tag); // trazenje i unos položaja oznake
-  //console.log(position);
-  var_names = S(py_code).splitLeft(tag);
-  var_names = S(var_names).strip(' ', '10', 'print', '+', '=', '5');
+  // *** TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH ***
+
+  // NE KORISTITI STRIP METODU
+  
+  for(var i=0; i<py_code.length; i++)
+  {
+    if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
+    {
+      var_names.push(py_code.slice(i+3, py_code.indexOf(' ')));
+      py_code2 = py_code.replace(/\s/g, ".");
+      if(!searchForChar(py_code2, ' '))
+      {
+        py_code = py_code.replace(/\./g, " ");
+      }
+      else{
+        console.log("y");
+      }
+      //py_code = searchAndReplace(py_code, '.', ' ');
+      //console.log(py_code.indexOf(' '));
+      /*if(searchForChar(py_code, ' '))
+      {
+        console.log("lose si napisao funkciju");
+      }
+      else {
+        //console.log("dobro si napisao funkciju");
+        py_code = searchAndReplace(py_code, ' ', '.');
+        //console.log("eo sad je zamjenjen. Uzivaj tebra!");
+      }*/
+    }
+  }
+  // var_names = S(var_names).strip(' ', '10', 'print', '+', '=', '5');
+  // var_names = S(py_code).splitLeft(tag);
   //var_names.push(py_code.slice(position+3, py_code.indexOf(' '))); // unos naziva varijabli u niz
+  console.log(py_code);
   console.log(var_names);
-  console.log(var_names.length); // da mi da je duljina 46
-  // čini mi se da ću morati napraviti ili neko grananje za svaku varijablu ili nekakvu petlju
-  for(var i = 0; i<var_names.length;i++)
-    console.log(var_names[i]); // ispisuje undefined
-  // search funkcija traži određen substring unutar stringa i vraća broj gdje pocinje taj podstring
-  // slice funkcija prima dva broja koja označavaju pocetnu i krajnju tocku stringa
-  // split je dobra sugestija
+  console.log(var_names.length); // kaze da mi da je duljina 46
+
+  console.log("var names[2]: ->"+var_names[2]);
+  
   res.render('py_parser',{
     title:'Python Parser',
     variable: var_names
   });
 });
+
+function searchAndReplace(input, strNew, strOld){ // funkcija za pronalazak i zamjenu znakova
+  var i = 0;
+  var output;
+  while(i < input.length){
+    if(input.charAt(i) == strOld)
+    {
+      output = input.substr(0, i) + strNew + input.substr(i+1);
+      console.log(output);
+      //input.charAt(i) = strNew; // treba drugacije napraviti jer JS neda da se stringovi mijenjaju
+      i++;
+    }
+    else i++;
+  }
+  console.log(i);
+  console.log(input.length);
+  return output; // vraća izmjenjen string
+}
+
+function searchForChar(input, char){ // funkcija za trazenje znaka, vraca bool
+  var i = 0;
+  while(i<input.length)
+  {
+    if(input.charAt(i) == char)
+    {
+      return true;
+    }
+    else return false;
+  }
+}
 
 // Start Server
 app.listen(8888, function(){
