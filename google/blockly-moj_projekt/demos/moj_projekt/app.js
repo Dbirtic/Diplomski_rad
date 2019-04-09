@@ -279,85 +279,48 @@ app.get('/py_parse', function(req, res){
 // Python Parser POST Route
 app.post('/py_parse', function(req, res){
   let py_code = req.body.code; // parsira kod iz textarea
-  let tag = "_x_"; // varijabla za oznaku koja ce se koristiti za pronalaženje varijable
-  var position; // varijabla koja je broj koji označava lokaciju u stringu, tj. u kodu koji ce se unijeti
+  let tag = req.body.tag; // varijabla za oznaku koja ce se koristiti za pronalaženje varijable
+  var num_var = req.body.num_var; // varijabla koja je broj koji označava lokaciju u stringu, tj. u kodu koji ce se unijeti
   var var_names = []; // niz u koji ćemo upisivati nazive varijabli
-  var py_code2, py_code3;
+  var py_code2;
 
   // *** TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH ***
-
-  // NE KORISTITI STRIP METODU
   
   for(var i=0; i<py_code.length; i++)
   {
     if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
     {
       var_names.push(py_code.slice(i+3, py_code.indexOf(' ')));
-      py_code2 = py_code.replace(/\s/g, ".");
-      if(!searchForChar(py_code2, ' '))
+      py_code2 = py_code.replace(" ", ".");
+      console.log("i = " + i);
+      if(py_code2.charAt(i) == ' ')
       {
-        py_code = py_code.replace(/\./g, " ");
+        py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
       }
       else{
-        console.log("y");
+        py_code = py_code2.replace(" ", ".");
       }
-      //py_code = searchAndReplace(py_code, '.', ' ');
-      //console.log(py_code.indexOf(' '));
-      /*if(searchForChar(py_code, ' '))
-      {
-        console.log("lose si napisao funkciju");
-      }
-      else {
-        //console.log("dobro si napisao funkciju");
-        py_code = searchAndReplace(py_code, ' ', '.');
-        //console.log("eo sad je zamjenjen. Uzivaj tebra!");
-      }*/
     }
   }
-  // var_names = S(var_names).strip(' ', '10', 'print', '+', '=', '5');
-  // var_names = S(py_code).splitLeft(tag);
-  //var_names.push(py_code.slice(position+3, py_code.indexOf(' '))); // unos naziva varijabli u niz
   console.log(py_code);
   console.log(var_names);
-  console.log(var_names.length); // kaze da mi da je duljina 46
+  console.log(var_names.length);
 
   console.log("var names[2]: ->"+var_names[2]);
   
+  for(var i = 0; i < var_names.length; i++)
+  {
+    if(i > num_var-1)
+      delete var_names[i];
+  }
+
+  console.log(var_names);
+
   res.render('py_parser',{
     title:'Python Parser',
     variable: var_names
   });
 });
-
-function searchAndReplace(input, strNew, strOld){ // funkcija za pronalazak i zamjenu znakova
-  var i = 0;
-  var output;
-  while(i < input.length){
-    if(input.charAt(i) == strOld)
-    {
-      output = input.substr(0, i) + strNew + input.substr(i+1);
-      console.log(output);
-      //input.charAt(i) = strNew; // treba drugacije napraviti jer JS neda da se stringovi mijenjaju
-      i++;
-    }
-    else i++;
-  }
-  console.log(i);
-  console.log(input.length);
-  return output; // vraća izmjenjen string
-}
-
-function searchForChar(input, char){ // funkcija za trazenje znaka, vraca bool
-  var i = 0;
-  while(i<input.length)
-  {
-    if(input.charAt(i) == char)
-    {
-      return true;
-    }
-    else return false;
-  }
-}
 
 // Start Server
 app.listen(8888, function(){

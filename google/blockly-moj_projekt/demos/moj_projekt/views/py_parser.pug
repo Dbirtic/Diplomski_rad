@@ -7,6 +7,10 @@ block content
         h6 Napraviti generator za python kod koji prepoznaje variable u zadanom kodu i zamjenjuje ih sa Blockly varijablama
     form(method='POST', action='/py_parse')
         #form-group
+            label Tag:
+            input.form-control(name='tag', type='text')
+            label Number of variables:
+            input.form-control(name='num_var', type='text')
             label Python code:
             textarea.form-control(name='code', rows=5)
         p #{variable}
