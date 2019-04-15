@@ -23,8 +23,6 @@
     "express-validator": "^5.3.1",
     "mongoose": "^5.4.12",
     "pug": "^2.0.3",
-    "replace-string": "^2.0.0",
-    "serve-static": "^1.13.2",
-    "string": "^3.3.3"
+    "serve-static": "^1.13.2"
   }
 }

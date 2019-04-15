@@ -8,8 +8,7 @@ const session = require('express-session');
 const fs = require('fs');
 const cheerio = require('cheerio');
 const serveStatic = require('serve-static');
-const S = require('string');
-const replaceString = require('replace-string');
+const check = require('express-validator/check');
 
 const router = express.Router();
 
@@ -278,48 +277,78 @@ app.get('/py_parse', function(req, res){
 
 // Python Parser POST Route
 app.post('/py_parse', function(req, res){
-  let py_code = req.body.code; // parsira kod iz textarea
-  let tag = req.body.tag; // varijabla za oznaku koja ce se koristiti za pronalaženje varijable
-  var num_var = req.body.num_var; // varijabla koja je broj koji označava lokaciju u stringu, tj. u kodu koji ce se unijeti
-  var var_names = []; // niz u koji ćemo upisivati nazive varijabli
-  var py_code2;
+  req.checkBody('code', 'Python Code is required').notEmpty();
+  req.checkBody('num_var', 'Number of variables is required').notEmpty();
+  req.checkBody('tag', 'Tag is required').notEmpty();
+  req.checkBody('tag', 'Tag has to have at least 3 chars and max 6').isLength({min : 3, max : 6});
 
-  // *** TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH ***
-  
-  for(var i=0; i<py_code.length; i++)
-  {
-    if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
+  // Get Errors
+  let errors = req.validationErrors();
+
+  if(errors){
+    res.render('py_parser',{
+      title:'Python Parser',
+      errors:errors
+    });
+  }
+  else{
+    let py_code = req.body.code; // parsira kod iz textarea
+    let tag = req.body.tag; // varijabla za oznaku koja ce se koristiti za pronalaženje varijable
+    var num_var = parseInt(req.body.num_var); // varijabla koja je broj koji označava lokaciju u stringu, tj. u kodu koji ce se unijeti
+    var var_names = []; // niz u koji ćemo upisivati nazive varijabli
+    var py_code2;
+    var varijable = [];
+
+    // *** TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH ***
+    
+  // *** ZA PROVJERAVANJA TAGA TREBA ICI KOD ALA py_code.charAt(i) == tag.charAt(0) && ... ***
+  // *** MOZDA BI BILA DOBRA IDEJA NAPRAVITI JOS JEDNU PETLJU KOJA CE SAMO TAG PROVJERAVATI ***
+
+    for(var i=0; i<py_code.length; i++) // pretrazuje cijeli uneseni kod
     {
-      var_names.push(py_code.slice(i+3, py_code.indexOf(' ')));
-      py_code2 = py_code.replace(" ", ".");
-      console.log("i = " + i);
-      if(py_code2.charAt(i) == ' ')
+      // provjera taga
+      /*for(var j = 0; j < tag.length; j++)
       {
-        py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-      }
-      else{
-        py_code = py_code2.replace(" ", ".");
+        if(py_code.charAt(i) == tag.charAt(j)) // kako cu znati koliko ce dug tag biti
+      }*/
+      if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
+      {
+        var_names.push(py_code.slice(i+3, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
+        py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+        //console.log("i = " + i); // ispisuje brojac
+        if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+        {
+          py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+          console.log("py_code: " + py_code);
+        }
+        else{
+          console.log("else");
+          py_code = py_code2.replace(" ", ".");
+        }
       }
     }
+    //console.log(py_code);
+    //console.log(var_names);
+    //console.log(var_names.length);
+    //console.log("var names[2]: ->"+var_names[2]);
+    
+    for(var i = 0; i < var_names.length; i++) // prolazi kroz polje i brise ona koja su mal retardirana
+    {
+      if(i > num_var-1)
+        delete var_names[i];
+    }
+    for(var i = 0; i < num_var; i++) // puni drugo polje s nazivima varijabla
+    {
+      varijable.push(var_names[i]);
+    }
+
+    console.log("Varijable: " + varijable);
+
+    res.render('py_parser',{
+      title:'Python Parser',
+      variable: varijable
+    });
   }
-  console.log(py_code);
-  console.log(var_names);
-  console.log(var_names.length);
-
-  console.log("var names[2]: ->"+var_names[2]);
-  
-  for(var i = 0; i < var_names.length; i++)
-  {
-    if(i > num_var-1)
-      delete var_names[i];
-  }
-
-  console.log(var_names);
-
-  res.render('py_parser',{
-    title:'Python Parser',
-    variable: var_names
-  });
 });
 
 // Start Server
