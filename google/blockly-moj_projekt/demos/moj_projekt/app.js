@@ -298,20 +298,117 @@ app.post('/py_parse', function(req, res){
     var var_names = []; // niz u koji ćemo upisivati nazive varijabli
     var py_code2;
     var varijable = [];
+    var j = 0;
 
     // *** TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH ***
     
-  // *** ZA PROVJERAVANJA TAGA TREBA ICI KOD ALA py_code.charAt(i) == tag.charAt(0) && ... ***
-  // *** MOZDA BI BILA DOBRA IDEJA NAPRAVITI JOS JEDNU PETLJU KOJA CE SAMO TAG PROVJERAVATI ***
+    // *** ZA PROVJERAVANJA TAGA TREBA ICI KOD ALA py_code.charAt(i) == tag.charAt(0) && ... ***
+    // *** MOZDA BI BILA DOBRA IDEJA NAPRAVITI JOS JEDNU PETLJU KOJA CE SAMO TAG PROVJERAVATI ***
 
     for(var i=0; i<py_code.length; i++) // pretrazuje cijeli uneseni kod
     {
+      j = 0;
       // provjera taga
-      /*for(var j = 0; j < tag.length; j++)
+      if(py_code.charAt(i) == tag.charAt(j))
       {
-        if(py_code.charAt(i) == tag.charAt(j)) // kako cu znati koliko ce dug tag biti
-      }*/
-      if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
+        console.log("tag["+j+"]: "+tag.charAt(j));
+        //if(py_code.charAt(i+j) == tag.charAt(j))
+        j++;
+        console.log("j: " + j);
+        if(py_code.charAt(i+j) == tag.charAt(j))
+        {
+          j++;
+          console.log("j: " + j);
+          if(py_code.charAt(i+j) == tag.charAt(j))
+          {
+            j++;
+            console.log("j: " + j);
+            if(py_code.charAt(i+j) == tag.charAt(j))
+            {
+              j++;
+              console.log("j: " + j);
+              if(py_code.charAt(i+j) == tag.charAt(j))
+            {
+              j++;
+              console.log("j: " + j);
+              if(py_code.charAt(i+j) == tag.charAt(j))
+            {
+              j++;
+              console.log("j: " + j);
+              if(j> tag.length)
+                break;
+              else {
+                var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
+                py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+                if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+                {
+                  py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+                  console.log("py_code: " + py_code);
+                }
+                else{
+                  console.log("else");
+                  py_code = py_code2.replace(" ", ".");
+                }
+              }
+            }
+            else {
+                var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
+                py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+                if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+                {
+                  py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+                  console.log("py_code: " + py_code);
+                }
+                else{
+                  console.log("else");
+                  py_code = py_code2.replace(" ", ".");
+                }
+              }
+            }
+            else {
+              var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
+              py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+              if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+              {
+                py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+                console.log("py_code: " + py_code);
+              }
+              else{
+                console.log("else");
+                py_code = py_code2.replace(" ", ".");
+              }
+            }
+            }
+            else {
+              var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
+              py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+              if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+              {
+                py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+                console.log("py_code: " + py_code);
+              }
+              else{
+                console.log("else");
+                py_code = py_code2.replace(" ", ".");
+              }
+            }
+          }
+          else {
+            var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
+            py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+            if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+            {
+              py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+              console.log("py_code: " + py_code);
+            }
+            else{
+              console.log("else");
+              py_code = py_code2.replace(" ", ".");
+            }
+          }
+        }
+      }
+      /*if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
       {
         var_names.push(py_code.slice(i+3, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
         py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
@@ -325,7 +422,7 @@ app.post('/py_parse', function(req, res){
           console.log("else");
           py_code = py_code2.replace(" ", ".");
         }
-      }
+      }*/
     }
     //console.log(py_code);
     //console.log(var_names);
