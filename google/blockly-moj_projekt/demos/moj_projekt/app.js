@@ -300,10 +300,9 @@ app.post('/py_parse', function(req, res){
     var varijable = [];
     var j = 0;
 
-    // *** TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH ***
-    
-    // *** ZA PROVJERAVANJA TAGA TREBA ICI KOD ALA py_code.charAt(i) == tag.charAt(0) && ... ***
+    // TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH +
     // *** MOZDA BI BILA DOBRA IDEJA NAPRAVITI JOS JEDNU PETLJU KOJA CE SAMO TAG PROVJERAVATI ***
+    // *** TREBA QA NAPRAVITI S RAZLICITIM KODOM ***
 
     for(var i=0; i<py_code.length; i++) // pretrazuje cijeli uneseni kod
     {
