@@ -138,6 +138,7 @@ app.get('/add_blocks', function(request, response){
 // Add Blocks Submit POST Route
 app.post('/add_blocks', function(req, res){
   req.checkBody('name', 'Name is required').notEmpty();
+  req.checkBody('category', 'Category is required').notEmpty();
   req.checkBody('content', 'Content is required').notEmpty();
 
   // Get Errors
@@ -277,10 +278,18 @@ app.get('/py_parse', function(req, res){
 
 // Python Parser POST Route
 app.post('/py_parse', function(req, res){
-  req.checkBody('code', 'Python Code is required').notEmpty();
+  if(!req.checkBody('tag', 'Tag is required').notEmpty())
+  {
+    req.checkBody('tag', 'Tag is required').notEmpty();
+  }
+  else
+  {
+    req.checkBody('tag', 'Tag has to have at least 3 chars and max 6').isLength({min : 3, max : 6});
+  }
   req.checkBody('num_var', 'Number of variables is required').notEmpty();
-  req.checkBody('tag', 'Tag is required').notEmpty();
-  req.checkBody('tag', 'Tag has to have at least 3 chars and max 6').isLength({min : 3, max : 6});
+  req.checkBody('code', 'Python Code is required').notEmpty();
+  
+  
 
   // Get Errors
   let errors = req.validationErrors();
