@@ -300,144 +300,59 @@ app.post('/py_parse', function(req, res){
     var varijable = [];
     var j = 0;
 
-    // TREBA PRVO PRONACI SVE VARIJABLE S TAGOM ZATIM IH IZVADITI I TEK ONDA UKLONITI TAG S NJIH +
-    // *** MOZDA BI BILA DOBRA IDEJA NAPRAVITI JOS JEDNU PETLJU KOJA CE SAMO TAG PROVJERAVATI ***
-    // *** TREBA QA NAPRAVITI S RAZLICITIM KODOM ***
+    var l = py_code.length-1; // varijabla koja se koristi za ako se varijabla nalazi na kraju stringa
 
     for(var i=0; i<py_code.length; i++) // pretrazuje cijeli uneseni kod
     {
       j = 0;
-      // provjera taga
-      if(py_code.charAt(i) == tag.charAt(j))
+      while(j < tag.length && (py_code.charAt(i+j) == tag.charAt(j))) // provjerava tag i povecava brojac
       {
-        console.log("tag["+j+"]: "+tag.charAt(j));
-        //if(py_code.charAt(i+j) == tag.charAt(j))
         j++;
-        console.log("j: " + j);
-        if(py_code.charAt(i+j) == tag.charAt(j))
+      }
+      if(j == tag.length) // ako je pronaden tag onda kreni rezati
+      {
+        if((i+tag.length) == l) // ako se varijabla nalazi na kraju koda onda ju izrezi
         {
-          j++;
-          console.log("j: " + j);
-          if(py_code.charAt(i+j) == tag.charAt(j))
-          {
-            j++;
-            console.log("j: " + j);
-            if(py_code.charAt(i+j) == tag.charAt(j))
-            {
-              j++;
-              console.log("j: " + j);
-              if(py_code.charAt(i+j) == tag.charAt(j))
-            {
-              j++;
-              console.log("j: " + j);
-              if(py_code.charAt(i+j) == tag.charAt(j))
-            {
-              j++;
-              console.log("j: " + j);
-              if(j> tag.length)
-                break;
-              else {
-                var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
-                py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
-                if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
-                {
-                  py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-                  console.log("py_code: " + py_code);
-                }
-                else{
-                  console.log("else");
-                  py_code = py_code2.replace(" ", ".");
-                }
-              }
-            }
-            else {
-                var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
-                py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
-                if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
-                {
-                  py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-                  console.log("py_code: " + py_code);
-                }
-                else{
-                  console.log("else");
-                  py_code = py_code2.replace(" ", ".");
-                }
-              }
-            }
-            else {
-              var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
-              py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
-              if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
-              {
-                py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-                console.log("py_code: " + py_code);
-              }
-              else{
-                console.log("else");
-                py_code = py_code2.replace(" ", ".");
-              }
-            }
-            }
-            else {
-              var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
-              py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
-              if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
-              {
-                py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-                console.log("py_code: " + py_code);
-              }
-              else{
-                console.log("else");
-                py_code = py_code2.replace(" ", ".");
-              }
-            }
+          var_names.push(py_code.slice(i+tag.length, py_code.length));
+        }
+        else
+        {
+          // ako se varijabla sastoji od jednog slova onda ju isjeci
+          if(py_code.charAt(i+tag.length+1) == ' ')
+          {  
+            var_names.push(py_code.slice(i+tag.length, i+tag.length+1)); // unosi izrezanu varijablu iz stringa
           }
-          else {
-            var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
-            py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
-            if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
-            {
-              py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-              console.log("py_code: " + py_code);
-            }
-            else{
-              console.log("else");
-              py_code = py_code2.replace(" ", ".");
-            }
+          // stavlja varijablu u niz ako sadrzi vise od jednog slova
+          else
+          {  
+            var_names.push(py_code.slice(i+tag.length, py_code.indexOf(' ')));
+          }
+          // ako se tag nasao i varijabla isjekla onda zamjeni whitespace s tockama i kreni opet
+          py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
+          if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
+          {
+            py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
+          }
+          else
+          {
+            py_code = py_code2.replace(" ", ".");
           }
         }
       }
-      /*if(py_code.charAt(i) == '_' && py_code.charAt(i+1) == 'x' && py_code.charAt(i+2) == '_')
-      {
-        var_names.push(py_code.slice(i+3, py_code.indexOf(' '))); // unosi izrezanu varijablu iz stringa
-        py_code2 = py_code.replace(" ", "."); // mijenja prazna mjesta s točkama
-        //console.log("i = " + i); // ispisuje brojac
-        if(py_code2.charAt(i) == ' ') // ako nađe prazno mjesto onda slozi string s tockama
-        {
-          py_code = py_code2.substr(0, i) + '.' + py_code2.substr(i+1);
-          console.log("py_code: " + py_code);
-        }
-        else{
-          console.log("else");
-          py_code = py_code2.replace(" ", ".");
-        }
-      }*/
     }
-    //console.log(py_code);
-    //console.log(var_names);
-    //console.log(var_names.length);
-    //console.log("var names[2]: ->"+var_names[2]);
-    
-    for(var i = 0; i < var_names.length; i++) // prolazi kroz polje i brise ona koja su mal retardirana
+    // prolazi kroz polje i brise ona koja su suvisna
+    for(var i = 0; i < var_names.length; i++) 
     {
       if(i > num_var-1)
+      {
         delete var_names[i];
+      }
     }
-    for(var i = 0; i < num_var; i++) // puni drugo polje s nazivima varijabla
+    // puni drugo polje s nazivima varijabla
+    for(var i = 0; i < num_var; i++) 
     {
       varijable.push(var_names[i]);
     }
-
     console.log("Varijable: " + varijable);
 
     res.render('py_parser',{
