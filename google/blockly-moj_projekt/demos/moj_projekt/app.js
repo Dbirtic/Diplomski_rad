@@ -118,6 +118,19 @@ app.get('/block_factory', function(req, res){
   res.sendFile('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/block-factory_index.html');
 });
 
+app.post('/block_factory', function(req, res){
+  console.log("radi yay");
+
+  // serving static files for the Block Factory file
+  app.use(serveStatic(path.join(__dirname + './closure-library/closure/goog/base.js')));
+  app.use(serveStatic(path.join(__dirname, './blockfactory/')));
+  app.use(serveStatic(path.join(__dirname, './blockfactory/workspacefactory/')));
+  app.use(serveStatic('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/appengine/storage.js'));
+  app.use(serveStatic('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/msg/js/'));
+  // sending block-factory_index.html to the client
+  res.sendFile('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/block-factory_index.html');
+});
+
 // Get Single Block
 app.get('/blocks/:id', function(req, res){
   Block.findById(req.params.id, function(err, block){
