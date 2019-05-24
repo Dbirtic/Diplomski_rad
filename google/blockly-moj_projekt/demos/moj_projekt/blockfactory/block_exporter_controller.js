@@ -114,6 +114,9 @@ BlockExporterController.prototype.export = function() {
     }
   }
 
+  // varijabla koja ce pokupiti block definition
+  var blocDef = blockDefs; 
+
   if (wantGenStub) {
     // User wants to export selected blocks' generator stubs.
     if (!generatorStub_filename) {
@@ -126,12 +129,21 @@ BlockExporterController.prototype.export = function() {
       // Get generator stub code in the selected language for the blocks.
       var genStubs = this.tools.getGeneratorCode(blockXmlMap,
           language);
+      
+      /* *** TU BI TREBAO UBACITI KOD ZA PARSIRANJE I UBACIVANJE KODA U var code *** */
+      //var genStubString = document.getElementById("py_code_box").value; *** u njega ću ubacaivati dijelove
+      var pyCode = document.getElementById("py_code_box").value;
+      var firstHalf = genStubs.substr(0, genStubs.search("var code = "));
+      var secondHalf = genStubs.substr(genStubs.search("return"), genStubs.search("};"));
+      var genStubString = firstHalf + "var code = '" + pyCode + "';\n" + secondHalf;
+
+      document.getElementById("py_code_box").value = genStubString;
 
       // Download the file.
-      FactoryUtils.createAndDownloadFile(
-          genStubs, generatorStub_filename + '.js', 'javascript');
+      /*FactoryUtils.createAndDownloadFile(
+          genStubString, generatorStub_filename + '.js', 'javascript');
       BlocklyDevTools.Analytics.onExport(
-          BlocklyDevTools.Analytics.GENERATOR, { format: BlocklyDevTools.Analytics.FORMAT_JS });
+          BlocklyDevTools.Analytics.GENERATOR, { format: BlocklyDevTools.Analytics.FORMAT_JS });*/
     }
   }
 

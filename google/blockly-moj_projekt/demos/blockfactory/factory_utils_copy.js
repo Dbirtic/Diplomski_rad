@@ -169,14 +169,12 @@ FactoryUtils.getGeneratorStub = function(block, generatorLanguage) {
   }
   code.push("};");
 
-  /* I tried so hard and got so far :( */
-
   //document.getElementById("code_box").value += code.join('\n').toString();
-  /* var paragraph = document.getElementById("code_box");
+  var paragraph = document.getElementById("code_box");
   var codeToBeAdded = code.toString();
   var text = document.createTextNode("This just got added");
 
-  paragraph.textContent = text; */
+  paragraph.appendChild(codeToBeAdded);
 
   return code.join('\n');
 };
@@ -1019,4 +1017,116 @@ FactoryUtils.getHelpUrlFromRootBlock_ = function(rootBlock) {
     return helpUrlBlock.getFieldValue('TEXT');
   }
   return '';
+};
+
+
+module.exports = {
+  getBlockDef: function(blockType, rootBlock, format, workspace) {
+    blockType = FactoryUtils.cleanBlockType(blockType);
+    switch (format) {
+      case 'JSON':
+        var code = FactoryUtils.formatJson_(blockType, rootBlock);
+        break;
+      case 'JavaScript':
+        var code = FactoryUtils.formatJavaScript_(blockType, rootBlock, workspace);
+        break;
+    }
+    return code;
+  },
+
+  getGenStub: function(block, generatorLanguage) {
+    // Build factory blocks from block
+    if (BlockFactory.updateBlocksFlag) {  // TODO: Move this to updatePreview()
+      BlockFactory.mainWorkspace.clear();
+      var xml = BlockDefinitionExtractor.buildBlockFactoryWorkspace(block);
+      Blockly.Xml.domToWorkspace(xml, BlockFactory.mainWorkspace);
+      // Calculate timer to avoid infinite update loops
+      // TODO(#1267): Remove the global variables and any infinite loops.
+      BlockFactory.updateBlocksFlag = false;
+      setTimeout(
+          function() {BlockFactory.updateBlocksFlagDelayed = false;}, 3000);
+    }
+    BlockFactory.lastUpdatedBlock = block; // Variable to share the block value.
+  
+    function makeVar(root, name) {
+      name = name.toLowerCase().replace(/\W/g, '_');
+      return '  var ' + root + '_' + name;
+    }
+    // The makevar function lives in the original update generator.
+    var language = generatorLanguage;
+    var code = [];
+    code.push("Blockly." + language + "['" + block.type +
+              "'] = function(block) {");
+  
+    // Generate getters for any fields or inputs.
+    for (var i = 0, input; input = block.inputList[i]; i++) {
+      for (var j = 0, field; field = input.fieldRow[j]; j++) {
+        var name = field.name;
+        if (!name) {
+          continue;
+        }
+        if (field instanceof Blockly.FieldVariable) {
+          // Subclass of Blockly.FieldDropdown, must test first.
+          code.push(makeVar('variable', name) +
+                    " = Blockly." + language +
+                    ".variableDB_.getName(block.getFieldValue('" + name +
+                    "'), Blockly.Variables.NAME_TYPE);");
+        } else if (field instanceof Blockly.FieldAngle) {
+          // Subclass of Blockly.FieldTextInput, must test first.
+          code.push(makeVar('angle', name) +
+                    " = block.getFieldValue('" + name + "');");
+        } else if (Blockly.FieldDate && field instanceof Blockly.FieldDate) {
+          // Blockly.FieldDate may not be compiled into Blockly.
+          code.push(makeVar('date', name) +
+                    " = block.getFieldValue('" + name + "');");
+        } else if (field instanceof Blockly.FieldColour) {
+          code.push(makeVar('colour', name) +
+                    " = block.getFieldValue('" + name + "');");
+        } else if (field instanceof Blockly.FieldCheckbox) {
+          code.push(makeVar('checkbox', name) +
+                    " = block.getFieldValue('" + name + "') == 'TRUE';");
+        } else if (field instanceof Blockly.FieldDropdown) {
+          code.push(makeVar('dropdown', name) +
+                    " = block.getFieldValue('" + name + "');");
+        } else if (field instanceof Blockly.FieldNumber) {
+          code.push(makeVar('number', name) +
+                    " = block.getFieldValue('" + name + "');");
+        } else if (field instanceof Blockly.FieldTextInput) {
+          code.push(makeVar('text', name) +
+                    " = block.getFieldValue('" + name + "');");
+        }
+      }
+      var name = input.name;
+      if (name) {
+        if (input.type == Blockly.INPUT_VALUE) {
+          code.push(makeVar('value', name) +
+                    " = Blockly." + language + ".valueToCode(block, '" + name +
+                    "', Blockly." + language + ".ORDER_ATOMIC);");
+        } else if (input.type == Blockly.NEXT_STATEMENT) {
+          code.push(makeVar('statements', name) +
+                    " = Blockly." + language + ".statementToCode(block, '" +
+                    name + "');");
+        }
+      }
+    }
+    // Most languages end lines with a semicolon.  Python does not.
+    var lineEnd = {
+      'JavaScript': ';',
+      'Python': '',
+      'PHP': ';',
+      'Dart': ';'
+    };
+    code.push("  // TODO: Assemble " + language + " into code variable.");
+    if (block.outputConnection) {
+      code.push("  var code = '...';");
+      code.push("  // TODO: Change ORDER_NONE to the correct strength.");
+      code.push("  return [code, Blockly." + language + ".ORDER_NONE];");
+    } else {
+      code.push("  var code = '..." + (lineEnd[language] || '') + "\\n';");
+      code.push("  return code;");
+    }
+    code.push("};");
+  
+    return code.join('\n');
+  }
 };

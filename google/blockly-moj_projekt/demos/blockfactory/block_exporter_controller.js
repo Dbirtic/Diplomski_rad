@@ -126,10 +126,13 @@ BlockExporterController.prototype.export = function() {
       // Get generator stub code in the selected language for the blocks.
       var genStubs = this.tools.getGeneratorCode(blockXmlMap,
           language);
+      
+      /* *** TU BI TREBAO UBACITI KOD ZA PARSIRANJE I UBACIVANJE KODA U var code *** */
+      var genStubString = document.getElementById("py_code_box").value;
 
       // Download the file.
       FactoryUtils.createAndDownloadFile(
-          genStubs, generatorStub_filename + '.js', 'javascript');
+          genStubString, generatorStub_filename + '.js', 'javascript');
       BlocklyDevTools.Analytics.onExport(
           BlocklyDevTools.Analytics.GENERATOR, { format: BlocklyDevTools.Analytics.FORMAT_JS });
     }

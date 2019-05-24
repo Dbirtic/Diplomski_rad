@@ -34,6 +34,9 @@ const app = express();
 // Bring in Models
 let Block = require('./models/block');
 
+// Bring in Factory functions
+let FactoryFunc = require('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/factory_utils_copy');
+
 // Load View Enginge
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -119,7 +122,7 @@ app.get('/block_factory', function(req, res){
 });
 
 app.post('/block_factory', function(req, res){
-  console.log("radi yay");
+  /* CIJELA SHEMA S PARSIRANJEM SE ODVIJA U JS FILE-U BLOCKLY-JA */
 
   // serving static files for the Block Factory file
   app.use(serveStatic(path.join(__dirname + './closure-library/closure/goog/base.js')));
