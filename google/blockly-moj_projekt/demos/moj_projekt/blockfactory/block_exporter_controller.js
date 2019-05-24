@@ -131,19 +131,102 @@ BlockExporterController.prototype.export = function() {
           language);
       
       /* *** TU BI TREBAO UBACITI KOD ZA PARSIRANJE I UBACIVANJE KODA U var code *** */
-      //var genStubString = document.getElementById("py_code_box").value; *** u njega ću ubacaivati dijelove
-      var pyCode = document.getElementById("py_code_box").value;
+      
+      /* Getting the strings and initialization */
+      var userTag = document.getElementById("tag").value; // variable for getting the tag string
+      var pyCode = document.getElementById("py_code_box").value; // variable for getting the entered python code
+      var varNum = parseInt(document.getElementById("var_number").value); // variable for knowing how many different variables are in entered code
+      var varNames = []; // an array for retrieving every occurrence variable with a tag
+      var variables = []; // an array for storing distinct variables
+      var i, j, nameCounter, nameArrayCounter; // loop counters
+      var l = pyCode.length - 1; // it is used if a variable is located at the end of the string
+      var pyCode2; // helper string variable
+      var pyCode3; // variable for escaping variables
+      var escapeVar = "'+ value_";
+      var tagAndName = []; // variable for making regular expressions
+
       var firstHalf = genStubs.substr(0, genStubs.search("var code = "));
       var secondHalf = genStubs.substr(genStubs.search("return"), genStubs.search("};"));
-      var genStubString = firstHalf + "var code = '" + pyCode + "';\n" + secondHalf;
+
+      /* Parsing logic */
+      for(i = 0; i < pyCode.length; i++) // it's looping through whole python code
+      {
+        j = 0;
+        while(j < userTag.length && (pyCode.charAt(i+j) == userTag.charAt(j))) // it's checking whether the tag is found one character at a time
+        {
+          j++;
+        }
+        if(j == userTag.length) // if tag has been found
+        {
+          if((i + userTag) == l) // if the variable we want is at the end of a string
+          {
+            varNames.push(pyCode.slice(i + userTag.length, pyCode.length));
+          }
+          else
+          {
+            // if variable is one letter store it into an array
+            if(pyCode.charAt(i + userTag.length + 1) == ' ')
+            {
+              varNames.push(pyCode.slice(i + userTag.length, i + userTag.length + 1));
+            }
+            // stores variable in an array if it's longer than one letter
+            else
+            {
+              varNames.push(pyCode.slice(i + userTag.length, pyCode.indexOf(' ')));
+            }
+            // if tag is found and variable is sliced then swap whitespaces with full stops
+            pyCode2 = pyCode.replace(" ", "."); // swaps whitespaces with full stops
+            if(pyCode2.charAt(i) == ' ') // if whitespace is found then replace string with full stops
+            {
+              pyCode = pyCode2.substr(0, i) + '.' + pyCode2.substr(i, 1);
+            }
+            else
+            {
+              pyCode = pyCode2.replace(" ", ".");
+            }
+          }
+        }
+      }
+      pyCode = pyCode2.replace(/[.]/g, " ");
+      /* Making arrays cleaner & removing what isn't needed Logic */
+      for(i = 0; i < varNum; i++)
+      {
+        if(i > varNum - 1)
+        {
+          delete varNames[i];
+        }
+      }
+      // Storing variable names in second array
+      for(i = 0; i < varNum; i++)
+      {
+        variables.push(varNames[i]);
+        tagAndName.push(new RegExp(userTag + variables[i], 'g'));
+      }
+
+      /* Creating a string which has escaped variables */
+      i = 0;
+      pyCode3 = pyCode;
+      while(i < varNum)
+      {
+        pyCode3 = pyCode3.replace(tagAndName[i], escapeVar + variables[i] + " + '");
+        i++;
+      }
+      pyCode3 = pyCode3.replace(/\r?\n|\r/g, ' ');
+
+      /* Putting together the whole string */
+      var genStubString = firstHalf + "var code = '" + pyCode3 + "';\n" + secondHalf;
 
       document.getElementById("py_code_box").value = genStubString;
+      console.log(variables);
+      console.log(tagAndName);
+      console.log(genStubString);
 
       // Download the file.
       /*FactoryUtils.createAndDownloadFile(
           genStubString, generatorStub_filename + '.js', 'javascript');
       BlocklyDevTools.Analytics.onExport(
-          BlocklyDevTools.Analytics.GENERATOR, { format: BlocklyDevTools.Analytics.FORMAT_JS });*/
+          BlocklyDevTools.Analytics.GENERATOR, { format: BlocklyDevTools.Analytics.FORMAT_JS });
+      */
     }
   }
 
