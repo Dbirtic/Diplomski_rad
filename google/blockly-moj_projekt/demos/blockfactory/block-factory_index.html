@@ -94,13 +94,13 @@
       <!-- Moj kod -->
       <form method="POST" action="/block_factory">
         <h5>Tag:</h5> 
-        <textarea id="tag" rows="1" cols="20" placeholder="Enter tag you're using..." style="text-align:center;"></textarea>
+        <textarea id="tag" rows="1" cols="50" maxlength="6" minlength="3" placeholder="Enter tag you're using..." style="text-align:center;"></textarea>
         <h5>Number of variables:</h5>
-        <textarea id="var_number" rows="1" cols="20" placeholder="Enter number of variables you're using..." style="text-align:center;"></textarea>
+        <textarea id="var_number" rows="1" cols="50" placeholder="Enter number of variables you're using..." style="text-align:center;"></textarea>
         <br>
         <div id="form-group">
             <h5>Python code:</h5> 
-            <textarea class="form-control" id="py_code_box" rows="3" cols="108" placeholder="Write your python code here..."></textarea>
+            <textarea class="form-control" id="py_code_box" rows="3" cols="150" placeholder="Write your python code here..."></textarea>
             <br>
         </div>
       </form>
@@ -110,7 +110,7 @@
     <!-- Users may customize export settings through this form -->
     <div id="exportSettings">
       <br>
-      <h4> Export Settings </h4>
+      <h4> Generator Settings </h4>
       <form id="exportSettingsForm">
 
         <div id="selectedBlocksTextContainer">
@@ -146,11 +146,11 @@
         </div>
         <br>
       </form>
-      <button id="exporterSubmitButton" title="Download block starter code as specified in export settings.">Export</button>
+      <button id="exporterSubmitButton" title="Download block starter code as specified in export settings.">Generate</button>
     </div>
     <div id="exportPreview">
       <br>
-      <h4>Export Preview</h4>
+      <h4>Generator Preview</h4>
       <div id="blockDefs" class="exportPreviewTextArea">
         <p id="blockDefs_label">Block Definitions:</p>
         <pre id="blockDefs_textArea"></pre>

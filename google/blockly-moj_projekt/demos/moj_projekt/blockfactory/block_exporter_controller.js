@@ -115,7 +115,7 @@ BlockExporterController.prototype.export = function() {
   }
 
   // varijabla koja ce pokupiti block definition
-  var blocDef = blockDefs; 
+  var blocDef = this.tools.getBlockDefinitions(blockXmlMap, definitionFormat);
 
   if (wantGenStub) {
     // User wants to export selected blocks' generator stubs.
@@ -138,7 +138,7 @@ BlockExporterController.prototype.export = function() {
       var varNum = parseInt(document.getElementById("var_number").value); // variable for knowing how many different variables are in entered code
       var varNames = []; // an array for retrieving every occurrence variable with a tag
       var variables = []; // an array for storing distinct variables
-      var i, j, nameCounter, nameArrayCounter; // loop counters
+      var i, j; // loop counters
       var l = pyCode.length - 1; // it is used if a variable is located at the end of the string
       var pyCode2; // helper string variable
       var pyCode3; // variable for escaping variables
@@ -158,9 +158,10 @@ BlockExporterController.prototype.export = function() {
         }
         if(j == userTag.length) // if tag has been found
         {
-          if((i + userTag) == l) // if the variable we want is at the end of a string
+          if((i + userTag.length) == l) // if the variable we want is at the end of a string
           {
             varNames.push(pyCode.slice(i + userTag.length, pyCode.length));
+            console.log("if za kraj stringa\n");
           }
           else
           {
@@ -168,10 +169,12 @@ BlockExporterController.prototype.export = function() {
             if(pyCode.charAt(i + userTag.length + 1) == ' ')
             {
               varNames.push(pyCode.slice(i + userTag.length, i + userTag.length + 1));
+              console.log("if za one letter\n");
             }
             // stores variable in an array if it's longer than one letter
             else
             {
+              console.log("if za normalnu duljinu");
               varNames.push(pyCode.slice(i + userTag.length, pyCode.indexOf(' ')));
             }
             // if tag is found and variable is sliced then swap whitespaces with full stops
@@ -211,10 +214,10 @@ BlockExporterController.prototype.export = function() {
         pyCode3 = pyCode3.replace(tagAndName[i], escapeVar + variables[i] + " + '");
         i++;
       }
-      pyCode3 = pyCode3.replace(/\r?\n|\r/g, ' ');
+      pyCode3 = pyCode3.replace(/\r?\n|\r/g, "\\n\\t");
 
       /* Putting together the whole string */
-      var genStubString = firstHalf + "var code = '" + pyCode3 + "';\n" + secondHalf;
+      var genStubString = blocDef + "\n\n" + firstHalf + "var code = '" + pyCode3 + "';\n" + secondHalf;
 
       document.getElementById("py_code_box").value = genStubString;
       console.log(variables);
