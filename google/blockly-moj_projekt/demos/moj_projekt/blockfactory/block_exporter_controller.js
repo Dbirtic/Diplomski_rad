@@ -166,7 +166,7 @@ BlockExporterController.prototype.export = function() {
           else
           {
             // if variable is one letter store it into an array
-            if(pyCode.charAt(i + userTag.length + 1) == ' ')
+            if(pyCode.charAt(i + userTag.length + 1) == (' ' || /\r/))
             {
               varNames.push(pyCode.slice(i + userTag.length, i + userTag.length + 1));
               console.log("if za one letter\n");
