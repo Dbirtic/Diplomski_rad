@@ -101,8 +101,8 @@ BlockExporterController.prototype.export = function() {
       var blockDefs = this.tools.getBlockDefinitions(blockXmlMap,
           definitionFormat);
       // Download the file, using .js file ending for JSON or Javascript.
-      FactoryUtils.createAndDownloadFile(
-          blockDefs, blockDef_filename, 'javascript');
+      /*FactoryUtils.createAndDownloadFile(
+          blockDefs, blockDef_filename, 'javascript');*/
       BlocklyDevTools.Analytics.onExport(
           BlocklyDevTools.Analytics.BLOCK_DEFINITIONS,
           {
@@ -160,7 +160,6 @@ BlockExporterController.prototype.export = function() {
           if((i + userTag.length) == l) // if the variable we want is at the end of a string
           {
             varNames.push(pyCode.slice(i + userTag.length, pyCode.length));
-            console.log("if za kraj stringa\n");
           }
           else
           {
@@ -168,12 +167,10 @@ BlockExporterController.prototype.export = function() {
             if(pyCode.charAt(i + userTag.length + 1) == (' ' || /\r?\n/))
             {
               varNames.push(pyCode.slice(i + userTag.length, i + userTag.length + 1));
-              console.log("if za one letter\n");
             }
             // stores variable in an array if it's longer than one letter
             else
             {
-              console.log("if za normalnu duljinu");
               varNames.push(pyCode.slice(i + userTag.length, pyCode.indexOf(' ')));
             }
             // if tag is found and variable is sliced then swap whitespaces with full stops
@@ -219,9 +216,6 @@ BlockExporterController.prototype.export = function() {
       var genStubString = blocDef + "\n\n" + firstHalf + "var code = '" + pyCode3 + "';\n" + secondHalf;
 
       document.getElementById("py_code_box").value = genStubString;
-      /* console.log(variables);
-      console.log(tagAndName);
-      console.log(genStubString); */
 
       // Download the file.
       /*FactoryUtils.createAndDownloadFile(

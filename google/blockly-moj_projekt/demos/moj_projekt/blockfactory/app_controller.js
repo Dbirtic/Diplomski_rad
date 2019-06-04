@@ -590,11 +590,11 @@ AppController.prototype.initializeBlocklyStorage = function() {
       'Sorry, "%1" doesn\'t correspond with any saved Blockly file.';
   BlocklyStorage.XML_ERROR = 'Could not load your saved file.\n' +
       'Perhaps it was created with a different version of Blockly?';
-  var linkButton = document.getElementById('linkButton');
+  /*var linkButton = document.getElementById('linkButton');
   linkButton.style.display = 'inline-block';
   linkButton.addEventListener('click',
       function() {
-          BlocklyStorage.link(BlockFactory.mainWorkspace);});
+          BlocklyStorage.link(BlockFactory.mainWorkspace);});*/
   BlockFactory.disableEnableLink();
 };
 

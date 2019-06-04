@@ -292,11 +292,11 @@ BlockFactory.getBlockDefinitionFormat = function() {
  * Disable link and save buttons if the format is 'Manual', enable otherwise.
  */
 BlockFactory.disableEnableLink = function() {
-  var linkButton = document.getElementById('linkButton');
+  //var linkButton = document.getElementById('linkButton');
   var saveBlockButton = document.getElementById('localSaveButton');
   var saveToLibButton = document.getElementById('saveToBlockLibraryButton');
   var disabled = document.getElementById('format').value.substr(0, 6) == 'Manual';
-  linkButton.disabled = disabled;
+  //linkButton.disabled = disabled;
   saveBlockButton.disabled = disabled;
   saveToLibButton.disabled = disabled;
 };
