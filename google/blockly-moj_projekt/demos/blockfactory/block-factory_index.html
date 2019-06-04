@@ -60,7 +60,7 @@
         <a class="nav-item nav-link" href="/add_blocks">Add Block</a>
         <a class="nav-item nav-link" href="/blocks">List of Added Blocks</a>
         <a class="nav-item nav-link" href="/block_factory">Block Factory</a>
-        <a class="nav-item nav-link" href="/py_parse">Python Parser</a>
+        <!-- <a class="nav-item nav-link" href="/py_parse">Python Parser</a> -->
       </div>
     </div>
   </nav>
@@ -76,7 +76,8 @@
   <div id="blockLibraryExporter">
     <br>
     <p>
-      First, select blocks from your block library by clicking on them. Then, use the Export Settings form to download starter code for selected blocks.
+      First, select a block from block selector. 
+      Then, put your code into the Python Code box, put tag that you're using and number of different variables you're using and then press Generate button.
     </p>
     <div id="exportSelector">
       <br>
@@ -117,20 +118,20 @@
           <p>Currently Selected:</p>
           <p id="selectedBlocksText"></p>
         </div>
-        <label><input type="checkbox" id="blockDefCheck">Block Definition(s)</label><br>
-        <div id="blockDefSettings" class="subsettings">
+        <!-- <label><input type="checkbox" id="blockDefCheck">Block Definition(s)</label><br> -->
+        <div id="blockDefSettings" class="subsettings"> 
           <label>Format:
           <select id="exportFormat">
             <!-- <option value="JSON">JSON</option> -->
             <option value="JavaScript">JavaScript</option>
           </select></label>
           <br>
-          <label>File Name:<br>
-          <input type="text" id="blockDef_filename"></label>
-        </div>
+          <!-- <label>File Name:<br>
+          <input type="text" id="blockDef_filename"></label> -->
+        </div> 
         <br>
 
-        <label><input type="checkbox" id="genStubCheck">Generator Stub(s)</label><br>
+        <!-- <label><input type="checkbox" id="genStubCheck">Generator Stub(s)</label><br> -->
         <div id="genStubSettings" class="subsettings">
           <label>Language:
           <select id="exportLanguage">
@@ -141,8 +142,8 @@
             <option value="Dart">Dart</option> -->
           </select></label>
           <br>
-          <label>File Name:<br>
-          <input type="text" id="generatorStub_filename"></label><br>
+         <!-- <label>File Name:<br>
+          <input type="text" id="generatorStub_filename"></label><br> -->
         </div>
         <br>
       </form>

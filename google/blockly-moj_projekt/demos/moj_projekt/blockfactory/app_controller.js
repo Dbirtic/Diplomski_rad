@@ -412,20 +412,20 @@ AppController.prototype.assignExporterClickHandlers = function() {
 AppController.prototype.assignExporterChangeListeners = function() {
   var self = this;
 
-  var blockDefCheck = document.getElementById('blockDefCheck');
-  var genStubCheck = document.getElementById('genStubCheck');
+  var blockDefCheck = true; // stavljeno iz document.getElementById('blockDefCheck') u true
+  var genStubCheck = true; // stavljeno iz document.getElementById('genStubCheck') u true
 
   // Select the block definitions and generator stubs on default.
-  blockDefCheck.checked = true;
-  genStubCheck.checked = true;
+  //blockDefCheck.checked = true;
+  //genStubCheck.checked = true;
 
   // Checking the block definitions checkbox displays preview of code to export.
-  document.getElementById('blockDefCheck').addEventListener('change',
+  /*document.getElementById('blockDefCheck').addEventListener('change',
       function(e) {
         self.ifCheckedEnable(blockDefCheck.checked,
             ['blockDefs', 'blockDefSettings']);
       });
-
+  */
   // Preview updates when user selects different block definition format.
   document.getElementById('exportFormat').addEventListener('change',
       function(e) {
@@ -433,12 +433,12 @@ AppController.prototype.assignExporterChangeListeners = function() {
       });
 
   // Checking the generator stub checkbox displays preview of code to export.
-  document.getElementById('genStubCheck').addEventListener('change',
+  /*document.getElementById('genStubCheck').addEventListener('change',
       function(e) {
         self.ifCheckedEnable(genStubCheck.checked,
             ['genStubs', 'genStubSettings']);
       });
-
+  */
   // Preview updates when user selects different generator stub language.
   document.getElementById('exportLanguage').addEventListener('change',
       function(e) {

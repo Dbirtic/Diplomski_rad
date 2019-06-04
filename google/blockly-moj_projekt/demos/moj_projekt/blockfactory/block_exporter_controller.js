@@ -80,19 +80,18 @@ BlockExporterController.prototype.export = function() {
   var blockXmlMap = this.blockLibStorage.getBlockXmlMap(blockTypes);
 
   // Pull block definition(s) settings from the Export Settings form.
-  var wantBlockDef = document.getElementById('blockDefCheck').checked;
+  var wantBlockDef = true; // promijenjeno iz document.getElementById('blockDefCheck').checked u true
   var definitionFormat = document.getElementById('exportFormat').value;
-  var blockDef_filename = document.getElementById('blockDef_filename').value;
+  //var blockDef_filename = document.getElementById('blockDef_filename').value;
 
   // Pull block generator stub(s) settings from the Export Settings form.
-  var wantGenStub = document.getElementById('genStubCheck').checked;
+  var wantGenStub = true; //promjenjeno iz document.getElementById('genStubCheck').checked u true
   var language = document.getElementById('exportLanguage').value;
-  var generatorStub_filename = document.getElementById(
-      'generatorStub_filename').value;
+  //var generatorStub_filename = document.getElementById('generatorStub_filename').value;
 
   if (wantBlockDef) {
     // User wants to export selected blocks' definitions.
-    if (!blockDef_filename) {
+    if (!true) {
       // User needs to enter filename.
       var msg = 'Please enter a filename for your block definition(s) download.';
       BlocklyDevTools.Analytics.onWarning(msg);
@@ -119,7 +118,7 @@ BlockExporterController.prototype.export = function() {
 
   if (wantGenStub) {
     // User wants to export selected blocks' generator stubs.
-    if (!generatorStub_filename) {
+    if (!true) {
       // User needs to enter filename.
       var msg = 'Please enter a filename for your generator stub(s) download.';
       BlocklyDevTools.Analytics.onWarning(msg);
@@ -166,7 +165,7 @@ BlockExporterController.prototype.export = function() {
           else
           {
             // if variable is one letter store it into an array
-            if(pyCode.charAt(i + userTag.length + 1) == (' ' || /\r/))
+            if(pyCode.charAt(i + userTag.length + 1) == (' ' || /\r?\n/))
             {
               varNames.push(pyCode.slice(i + userTag.length, i + userTag.length + 1));
               console.log("if za one letter\n");
@@ -220,9 +219,9 @@ BlockExporterController.prototype.export = function() {
       var genStubString = blocDef + "\n\n" + firstHalf + "var code = '" + pyCode3 + "';\n" + secondHalf;
 
       document.getElementById("py_code_box").value = genStubString;
-      console.log(variables);
+      /* console.log(variables);
       console.log(tagAndName);
-      console.log(genStubString);
+      console.log(genStubString); */
 
       // Download the file.
       /*FactoryUtils.createAndDownloadFile(
