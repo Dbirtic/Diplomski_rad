@@ -150,6 +150,7 @@ BlockExporterController.prototype.export = function() {
       /* Parsing logic */
       for(i = 0; i < pyCode.length; i++) // it's looping through whole python code
       {
+        console.log("Znak: "+pyCode.charAt(i)+"na " + "-tom mjestu\n");
         j = 0;
         while(j < userTag.length && (pyCode.charAt(i+j) == userTag.charAt(j))) // it's checking whether the tag is found one character at a time
         {
