@@ -141,38 +141,55 @@ BlockExporterController.prototype.export = function() {
       var l = pyCode.length - 1; // it is used if a variable is located at the end of the string
       var pyCode2; // helper string variable
       var pyCode3; // variable for escaping variables
+      var pyCode4; // variable for helping extract variables
       var escapeVar = "'+ value_";
       var tagAndName = []; // variable for making regular expressions
 
       var firstHalf = genStubs.substr(0, genStubs.search("var code = "));
       var secondHalf = genStubs.substr(genStubs.search("return"), genStubs.search("};"));
 
-      /* Parsing logic */
-      for(i = 0; i < pyCode.length; i++) // it's looping through whole python code
+      /*for(i = 0; i < pyCode.length; i++)
       {
-        console.log("Znak: "+pyCode.charAt(i)+"na " + "-tom mjestu\n");
+        console.log("Znak: "+pyCode.charAt(i)+" na "+ i +"-tom mjestu\n");
+      }*/
+
+      pyCode4 = pyCode.replace(/\n/g, ' ');
+      console.log("pyCodoe4: \n" + pyCode4);
+      console.log("duljina pycode4: " + pyCode4.length + "\nduljina pycode: " + pyCode.length);
+
+      /* Parsing logic */
+      for(i = 0; i < pyCode4.length; i++) // it's looping through whole python code
+      {
         j = 0;
-        while(j < userTag.length && (pyCode.charAt(i+j) == userTag.charAt(j))) // it's checking whether the tag is found one character at a time
+        while(j < userTag.length && (pyCode4.charAt(i+j) == userTag.charAt(j))) // it's checking whether the tag is found one character at a time
         {
           j++;
         }
         if(j == userTag.length) // if tag has been found
         {
+          if((pyCode4.length - i - userTag.length) <= 10)
+          {
+            varNames.push(pyCode4.slice(i + userTag.length, pyCode4.length));
+          }
           if((i + userTag.length) == l) // if the variable we want is at the end of a string
           {
-            varNames.push(pyCode.slice(i + userTag.length, pyCode.length));
+            varNames.push(pyCode4.slice(l, pyCode4.length));
+            console.log("pyCode.charAt("+ i +"user.Tag): "+ pyCode4.charAt(i + userTag.length));
+            console.log("uvjet: varijabla je na kraju koda\n");
           }
           else
           {
-            // if variable is one letter store it into an array
-            if(pyCode.charAt(i + userTag.length + 1) == (' ' || /\r?\n/))
+            // if variable is one letter store it into an array isprobao '<br/>' || , /([^>\r\n]?)(\r\n|\n\r|\r|\n)/
+            if(pyCode4.charAt(i + userTag.length + 1) == (' ' || '' || '.'))
             {
-              varNames.push(pyCode.slice(i + userTag.length, i + userTag.length + 1));
+              console.log("uvjet: varijabla ima jedan znak\n")
+              varNames.push(pyCode4.slice(i + userTag.length, i + userTag.length + 1));
             }
             // stores variable in an array if it's longer than one letter
             else
             {
-              varNames.push(pyCode.slice(i + userTag.length, pyCode.indexOf(' ')));
+              console.log("uvjet: varijabla je duza od jednog znaka i nije na kraju koda\n")
+              varNames.push(pyCode4.slice(i + userTag.length, pyCode4.indexOf(' ', i + userTag.length)));
             }
             // if tag is found and variable is sliced then swap whitespaces with full stops
             pyCode2 = pyCode.replace(" ", "."); // swaps whitespaces with full stops
@@ -205,7 +222,7 @@ BlockExporterController.prototype.export = function() {
 
       /* Creating a string which has escaped variables */
       i = 0;
-      pyCode3 = pyCode;
+      pyCode3 = pyCode4;
       while(i < varNum)
       {
         pyCode3 = pyCode3.replace(tagAndName[i], escapeVar + variables[i] + " + '");
@@ -216,7 +233,8 @@ BlockExporterController.prototype.export = function() {
       /* Putting together the whole string */
       var genStubString = blocDef + "\n\n" + firstHalf + "var code = '" + pyCode3 + "';\n" + secondHalf;
 
-      document.getElementById("py_code_box").value = genStubString;
+      //document.getElementById("py_code_box").value = genStubString;
+      document.getElementById("blockArea").value = genStubString;
 
       // Download the file.
       /*FactoryUtils.createAndDownloadFile(

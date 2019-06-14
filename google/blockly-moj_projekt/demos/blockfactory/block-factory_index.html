@@ -57,7 +57,7 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-        <a class="nav-item nav-link" href="/add_blocks">Add Block</a>
+        <!-- <a class="nav-item nav-link" href="/add_blocks">Add Block</a> -->
         <a class="nav-item nav-link" href="/blocks">List of Added Blocks</a>
         <a class="nav-item nav-link" href="/block_factory">Block Factory</a>
         <!-- <a class="nav-item nav-link" href="/py_parse">Python Parser</a> -->
@@ -148,7 +148,16 @@
         <br>
       </form>
       <button id="exporterSubmitButton" title="Download block starter code as specified in export settings.">Generate</button>
-      
+      <br>
+      <br>
+      <form method="POST" action="/block_factory">
+        <div id="form-group"><label>Name:</label><input class="form-control" name="name" type="text"/><br/></div>
+        <div id="form-group"><label>Category:</label><input class="form-control" name="category" type="text"/><br/></div>
+        <div id="form-group"><label>Content:</label><textarea id="blockArea" class="form-control" name="content" rows="8"></textarea>
+        <br/>
+        </div><input class="btn btn-dark" type="submit" value="Submit" /></form>
+        <br>
+        <br>
     </div>
     <div id="exportPreview">
       <br>
