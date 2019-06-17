@@ -101,8 +101,6 @@ BlockExporterController.prototype.export = function() {
       var blockDefs = this.tools.getBlockDefinitions(blockXmlMap,
           definitionFormat);
       // Download the file, using .js file ending for JSON or Javascript.
-      /*FactoryUtils.createAndDownloadFile(
-          blockDefs, blockDef_filename, 'javascript');*/
       BlocklyDevTools.Analytics.onExport(
           BlocklyDevTools.Analytics.BLOCK_DEFINITIONS,
           {
@@ -113,7 +111,7 @@ BlockExporterController.prototype.export = function() {
     }
   }
 
-  // varijabla koja ce pokupiti block definition
+  // variable which gets block definition
   var blocDef = this.tools.getBlockDefinitions(blockXmlMap, definitionFormat);
 
   if (wantGenStub) {
@@ -128,8 +126,6 @@ BlockExporterController.prototype.export = function() {
       // Get generator stub code in the selected language for the blocks.
       var genStubs = this.tools.getGeneratorCode(blockXmlMap,
           language);
-      
-      /* *** TU BI TREBAO UBACITI KOD ZA PARSIRANJE I UBACIVANJE KODA U var code *** */
       
       /* Getting the strings and initialization */
       var userTag = document.getElementById("tag").value; // variable for getting the tag string
@@ -148,14 +144,8 @@ BlockExporterController.prototype.export = function() {
       var firstHalf = genStubs.substr(0, genStubs.search("var code = "));
       var secondHalf = genStubs.substr(genStubs.search("return"), genStubs.search("};"));
 
-      /*for(i = 0; i < pyCode.length; i++)
-      {
-        console.log("Znak: "+pyCode.charAt(i)+" na "+ i +"-tom mjestu\n");
-      }*/
 
       pyCode4 = pyCode.replace(/\n/g, ' ');
-      console.log("pyCodoe4: \n" + pyCode4);
-      console.log("duljina pycode4: " + pyCode4.length + "\nduljina pycode: " + pyCode.length);
 
       /* Parsing logic */
       for(i = 0; i < pyCode4.length; i++) // it's looping through whole python code
@@ -174,21 +164,17 @@ BlockExporterController.prototype.export = function() {
           if((i + userTag.length) == l) // if the variable we want is at the end of a string
           {
             varNames.push(pyCode4.slice(l, pyCode4.length));
-            console.log("pyCode.charAt("+ i +"user.Tag): "+ pyCode4.charAt(i + userTag.length));
-            console.log("uvjet: varijabla je na kraju koda\n");
           }
           else
           {
             // if variable is one letter store it into an array isprobao '<br/>' || , /([^>\r\n]?)(\r\n|\n\r|\r|\n)/
             if(pyCode4.charAt(i + userTag.length + 1) == (' ' || '' || '.'))
             {
-              console.log("uvjet: varijabla ima jedan znak\n")
               varNames.push(pyCode4.slice(i + userTag.length, i + userTag.length + 1));
             }
             // stores variable in an array if it's longer than one letter
             else
             {
-              console.log("uvjet: varijabla je duza od jednog znaka i nije na kraju koda\n")
               varNames.push(pyCode4.slice(i + userTag.length, pyCode4.indexOf(' ', i + userTag.length)));
             }
             // if tag is found and variable is sliced then swap whitespaces with full stops
@@ -222,7 +208,7 @@ BlockExporterController.prototype.export = function() {
 
       /* Creating a string which has escaped variables */
       i = 0;
-      pyCode3 = pyCode4;
+      pyCode3 = pyCode;
       while(i < varNum)
       {
         pyCode3 = pyCode3.replace(tagAndName[i], escapeVar + variables[i] + " + '");
@@ -235,13 +221,6 @@ BlockExporterController.prototype.export = function() {
 
       //document.getElementById("py_code_box").value = genStubString;
       document.getElementById("blockArea").value = genStubString;
-
-      // Download the file.
-      /*FactoryUtils.createAndDownloadFile(
-          genStubString, generatorStub_filename + '.js', 'javascript');
-      BlocklyDevTools.Analytics.onExport(
-          BlocklyDevTools.Analytics.GENERATOR, { format: BlocklyDevTools.Analytics.FORMAT_JS });
-      */
     }
   }
 
