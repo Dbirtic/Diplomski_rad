@@ -73,7 +73,7 @@
   </div>
 
   <!-- Exporter tab -->
-  <div id="blockLibraryExporter">
+  <div id="blockLibraryExporter" style="padding: 10px;">
     <br>
     <p>
       First, select a block from block selector. 
@@ -150,15 +150,38 @@
       <button id="exporterSubmitButton" title="Download block starter code as specified in export settings.">Generate</button>
       <br>
       <br>
-      <form method="POST" action="/block_factory">
-        <div id="form-group"><label>Name:</label><input class="form-control" name="name" type="text"/><br/></div>
-        <div id="form-group"><label>Category:</label><input class="form-control" name="category" type="text"/><br/></div>
-        <div id="form-group"><label>Content:</label><textarea id="blockArea" class="form-control" name="content" rows="8"></textarea>
+      <form method="POST" onclick="return checkInput()" action="/block_factory" id="add_block_form">
+        <div id="form-group"><h6>Name:</h6><input id="name_for_db" class="form-control" name="name" type="text"/><br/></div>
+        <div id="form-group"><h6>Category:</h6><input id="category_for_db" class="form-control" name="category" type="text"/><br/></div>
+        <div id="form-group"><h6>Content:</h6><textarea id="blockArea" class="form-control" name="content" rows="8"></textarea>
         <br/>
         </div><input class="btn btn-dark" type="submit" value="Submit" /></form>
         <br>
         <br>
     </div>
+    <script type="text/javascript">
+      function checkInput()
+      {
+        var name = document.getElementById("name_for_db").value;
+        var category = document.getElementById("category_for_db").value;
+        var content = document.getElementById("blockArea").value;
+        console.log("name: " + name);
+        console.log("category: " + category);
+        console.log("content: " + content);
+        if(name == null || name =='')
+        {
+          alert("Name field is empty. Please fill it up.");
+        }
+        if(category == null || category == '')
+        {
+          alert("Category field is empty. Please fill it up.");
+        }
+        if(content == null || content == '')
+        {
+          alert("Content field is empty. Please fill it up.");
+        }
+    }
+    </script>
     <div id="exportPreview">
       <br>
       <h4>Generator Preview</h4>
