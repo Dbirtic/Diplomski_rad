@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<p>This example uses the addEventListener() method to attach a click event to a button.</p>
+
+<button id="myBtn">Try it</button>
+
+<p><strong>Note:</strong> The addEventListener() method is not supported in Internet Explorer 8 and earlier versions.</p>
+
+<input type="file" id="files" name="files[]" />
+<output id="list"></output>
+
+<script>
+	function handleFileSelect(evt) {
+	alert('Handler');
+    var files = evt.target.files; // FileList object
+	f = files[0];
+	var reader = new FileReader();
+
+    // Loop through the FileList and render image files as thumbnails.
+    /*for (var i = 0, f; f = files[i]; i++) {
+
+      // Only process image files.
+      if (!f.type.match('image.*')) {
+        continue;
+      }
+
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          // Render thumbnail.
+          var span = document.createElement('span');
+          span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                            '" title="', escape(theFile.name), '"/>'].join('');
+          document.getElementById('list').insertBefore(span, null);
+        };
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsDataURL(f);
+    }*/
+	alert('Reading started!');
+	reader.onload = function(e) {
+		var text = reader.result;
+		alert(text);
+	}
+
+	reader.readAsText(f);
+	
+	alert('Reading ended!');
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
+
+</body>
+</html>

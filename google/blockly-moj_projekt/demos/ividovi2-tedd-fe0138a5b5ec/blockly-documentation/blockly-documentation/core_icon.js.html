@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/icon.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/icon.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @license
+ * Visual Blocks Editor
+ *
+ * Copyright 2013 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Object representing an icon on a block.
+ * @author fraser@google.com (Neil Fraser)
+ */
+'use strict';
+
+goog.provide('Blockly.Icon');
+
+goog.require('goog.dom');
+goog.require('goog.math.Coordinate');
+
+
+/**
+ * Class for an icon.
+ * @param {Blockly.Block} block The block associated with this icon.
+ * @constructor
+ */
+Blockly.Icon = function(block) {
+  this.block_ = block;
+};
+
+/**
+ * Does this icon get hidden when the block is collapsed.
+ */
+Blockly.Icon.prototype.collapseHidden = true;
+
+/**
+ * Height and width of icons.
+ */
+Blockly.Icon.prototype.SIZE = 17;
+
+/**
+ * Bubble UI (if visible).
+ * @type {Blockly.Bubble}
+ * @private
+ */
+Blockly.Icon.prototype.bubble_ = null;
+
+/**
+ * Absolute coordinate of icon's center.
+ * @type {goog.math.Coordinate}
+ * @private
+ */
+Blockly.Icon.prototype.iconXY_ = null;
+
+/**
+ * Create the icon on the block.
+ */
+Blockly.Icon.prototype.createIcon = function() {
+  if (this.iconGroup_) {
+    // Icon already exists.
+    return;
+  }
+  /* Here's the markup that will be generated:
+  &lt;g class="blocklyIconGroup">
+    ...
+  &lt;/g>
+  */
+  this.iconGroup_ = Blockly.createSvgElement('g',
+      {'class': 'blocklyIconGroup'}, null);
+  this.drawIcon_(this.iconGroup_);
+
+  this.block_.getSvgRoot().appendChild(this.iconGroup_);
+  Blockly.bindEvent_(this.iconGroup_, 'mouseup', this, this.iconClick_);
+  this.updateEditable();
+};
+
+/**
+ * Dispose of this icon.
+ */
+Blockly.Icon.prototype.dispose = function() {
+  // Dispose of and unlink the icon.
+  goog.dom.removeNode(this.iconGroup_);
+  this.iconGroup_ = null;
+  // Dispose of and unlink the bubble.
+  this.setVisible(false);
+  this.block_ = null;
+};
+
+/**
+ * Add or remove the UI indicating if this icon may be clicked or not.
+ */
+Blockly.Icon.prototype.updateEditable = function() {
+  if (this.block_.isInFlyout || !this.block_.isEditable()) {
+    Blockly.addClass_(/** @type {!Element} */ (this.iconGroup_),
+                      'blocklyIconGroupReadonly');
+  } else {
+    Blockly.removeClass_(/** @type {!Element} */ (this.iconGroup_),
+                         'blocklyIconGroupReadonly');
+  }
+};
+
+/**
+ * Is the associated bubble visible?
+ * @return {boolean} True if the bubble is visible.
+ */
+Blockly.Icon.prototype.isVisible = function() {
+  return !!this.bubble_;
+};
+
+/**
+ * Clicking on the icon toggles if the bubble is visible.
+ * @param {!Event} e Mouse click event.
+ * @private
+ */
+Blockly.Icon.prototype.iconClick_ = function(e) {
+  if (Blockly.dragMode_ == Blockly.DRAG_FREE) {
+    // Drag operation is concluding.  Don't open the editor.
+    return;
+  }
+  if (!this.block_.isInFlyout &amp;&amp; !Blockly.isRightButton(e)) {
+    this.setVisible(!this.isVisible());
+  }
+};
+
+/**
+ * Change the colour of the associated bubble to match its block.
+ */
+Blockly.Icon.prototype.updateColour = function() {
+  if (this.isVisible()) {
+    this.bubble_.setColour(this.block_.getColour());
+  }
+};
+
+/**
+ * Render the icon.
+ * @param {number} cursorX Horizontal offset at which to position the icon.
+ * @return {number} Horizontal offset for next item to draw.
+ */
+Blockly.Icon.prototype.renderIcon = function(cursorX) {
+  if (this.collapseHidden &amp;&amp; this.block_.isCollapsed()) {
+    this.iconGroup_.setAttribute('display', 'none');
+    return cursorX;
+  }
+  this.iconGroup_.setAttribute('display', 'block');
+
+  var TOP_MARGIN = 5;
+  var width = this.SIZE;
+  if (this.block_.RTL) {
+    cursorX -= width;
+  }
+  this.iconGroup_.setAttribute('transform',
+      'translate(' + cursorX + ',' + TOP_MARGIN + ')');
+  this.computeIconLocation();
+  if (this.block_.RTL) {
+    cursorX -= Blockly.BlockSvg.SEP_SPACE_X;
+  } else {
+    cursorX += width + Blockly.BlockSvg.SEP_SPACE_X;
+  }
+  return cursorX;
+};
+
+/**
+ * Notification that the icon has moved.  Update the arrow accordingly.
+ * @param {!goog.math.Coordinate} xy Absolute location.
+ */
+Blockly.Icon.prototype.setIconLocation = function(xy) {
+  this.iconXY_ = xy;
+  if (this.isVisible()) {
+    this.bubble_.setAnchorLocation(xy);
+  }
+};
+
+/**
+ * Notification that the icon has moved, but we don't really know where.
+ * Recompute the icon's location from scratch.
+ */
+Blockly.Icon.prototype.computeIconLocation = function() {
+  // Find coordinates for the centre of the icon and update the arrow.
+  var blockXY = this.block_.getRelativeToSurfaceXY();
+  var iconXY = Blockly.getRelativeXY_(this.iconGroup_);
+  var newXY = new goog.math.Coordinate(
+      blockXY.x + iconXY.x + this.SIZE / 2,
+      blockXY.y + iconXY.y + this.SIZE / 2);
+  if (!goog.math.Coordinate.equals(this.getIconLocation(), newXY)) {
+    this.setIconLocation(newXY);
+  }
+};
+
+/**
+ * Returns the center of the block's icon relative to the surface.
+ * @return {!goog.math.Coordinate} Object with x and y properties.
+ */
+Blockly.Icon.prototype.getIconLocation = function() {
+  return this.iconXY_;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:43 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

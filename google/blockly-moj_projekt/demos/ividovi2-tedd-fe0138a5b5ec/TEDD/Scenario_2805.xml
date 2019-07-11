@@ -1,0 +1,129 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="import_custom" id="iHae)`;;lv4-1]ccNL6M" x="513" y="113">
+    <field name="import_value">Utils.API_RTE as RTE</field>
+    <next>
+      <block type="import_custom" id="Ul*L5*@gYl5N0f~la])!">
+        <field name="import_value">Utils.API_Diagnostic</field>
+        <next>
+          <block type="import_custom" id="on}NEL{JIQDqYv]Q3:Cw">
+            <field name="import_value">Utils.utilities</field>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="procedures_defreturn" id="M=/}jKH0_^8|4E~aUpH-" x="513" y="213">
+    <field name="NAME">Measurement</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+    <statement name="STACK">
+      <block type="startanje_ploce" id="Al.ms_u4M]am|xbQ@$rD">
+        <value name="state">
+          <block type="math_number" id="ZI$UW.^@uGs-:N^1acbz">
+            <field name="NUM">4</field>
+          </block>
+        </value>
+        <value name="errorID">
+          <block type="math_number" id="C+_]2Z$V.RWT*;tP(7yP">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+        <next>
+          <block type="flashdataset" id="N0Akb]Z=[%M6CtEe8?(`">
+            <field name="positive_check">FALSE</field>
+            <value name="DS_name">
+              <block type="text" id="vL{.aiODz%lyb99%l2Na">
+                <field name="TEXT">LVL2</field>
+              </block>
+            </value>
+            <value name="errorID">
+              <block type="math_number" id=":_7q+JWFP5CkCVdY_;}G">
+                <field name="NUM">5</field>
+              </block>
+            </value>
+            <next>
+              <block type="stanje_ploce" id="iSaMxDA[e|~-`@WW*eT=">
+                <field name="positive_check">FALSE</field>
+                <value name="state">
+                  <block type="math_number" id="Zo8vl4vBX^s.md7/E_82">
+                    <field name="NUM">4</field>
+                  </block>
+                </value>
+                <value name="errorID">
+                  <block type="math_number" id=".$e?W(jG`yBiCDlhe7!B">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="checkerrorehm" id="$lbN}_W}#:5|l@:xEyM#">
+                    <field name="positive_check">TRUE</field>
+                    <value name="error_id">
+                      <block type="math_number" id="AAPA?(bf@NxN5!B[(@1B">
+                        <field name="NUM">80</field>
+                      </block>
+                    </value>
+                    <value name="errorID">
+                      <block type="math_number" id="d^GZD10SHBRGI(/_!!C.">
+                        <field name="NUM">7</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="triggererror" id="@rX?+cc;h;jHEzcy*qY0">
+                        <field name="positive_check">FALSE</field>
+                        <value name="host">
+                          <block type="text" id="@e6h?Fh?riXG45BGF}#%">
+                            <field name="TEXT">APH</field>
+                          </block>
+                        </value>
+                        <value name="error_id">
+                          <block type="math_number" id="~]X53D[FqEo+bgreMMBu">
+                            <field name="NUM">80</field>
+                          </block>
+                        </value>
+                        <value name="errorID">
+                          <block type="math_number" id="Vm9!bl[@)#)!G7Oomr}%">
+                            <field name="NUM">9</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="provjera_dtc_statusa" id="Hsn9d2q_hj5C)mnUany[">
+                            <field name="positive_check">FALSE</field>
+                            <value name="dtc">
+                              <block type="text" id="XD%r%rRiK3]n}N^ekn60">
+                                <field name="TEXT">0x205040</field>
+                              </block>
+                            </value>
+                            <value name="errorID">
+                              <block type="math_number" id="-uC#2rLK5-lB[s2uWF}7">
+                                <field name="NUM">0</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="klema_15" id="x%(ad-ZoVrxVB(5-JH#(">
+                                <field name="positive_check">FALSE</field>
+                                <value name="errorID">
+                                  <block type="math_number" id="G8~#AKTSa0Ca`*0xi{E)">
+                                    <field name="NUM">0</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="logic_boolean" id="!c*[o|1Du#x;0Cn_Ds:P">
+        <field name="BOOL">TRUE</field>
+      </block>
+    </value>
+  </block>
+</xml>

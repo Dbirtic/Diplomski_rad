@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Generator</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Generator</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>Generator</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    <h4 class="name" id="Generator"><span class="type-signature"></span>new Generator<span class="signature">(name)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Class for a code generator that translates the blocks into a language.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Language name of this generator.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line39">line 39</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".NAME_TYPE"><span class="type-signature">(static) </span>NAME_TYPE<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Category to separate generated function names from variables and procedures.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line48">line 48</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="INDENT"><span class="type-signature"></span>INDENT<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The method of indenting.  Defaults to two spaces, but language generators
+may override this to increase indent or change to tabs.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line71">line 71</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="INFINITE_LOOP_TRAP"><span class="type-signature">(nullable) </span>INFINITE_LOOP_TRAP<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    Arbitrary code to inject into locations that risk causing infinite loops.
+Any instances of '%1' will be replaced by the block ID that failed.
+E.g. '  checkTimeout(%1);\n'
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="STATEMENT_PREFIX"><span class="type-signature">(nullable) </span>STATEMENT_PREFIX<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    Arbitrary code to inject before every statement.
+Any instances of '%1' will be replaced by the block ID of the statement.
+E.g. 'highlight(%1);\n'
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line64">line 64</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="addLoopTrap"><span class="type-signature"></span>addLoopTrap<span class="signature">(branch, id)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Add an infinite loop trap to the contents of a loop.
+If loop is empty, add a statment prefix for the loop block.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>branch</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Code for loop contents.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ID of enclosing block.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line266">line 266</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Loop contents, with infinite loop trap added.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="addReservedWords"><span class="type-signature"></span>addReservedWords<span class="signature">(words)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Add one or more words to the list of reserved words for this language.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>words</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Comma-separated list of words to add to the list.
+    No spaces.  Duplicates are ok.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line289">line 289</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="allNestedComments"><span class="type-signature"></span>allNestedComments<span class="signature">(block<span class="signature-attributes">non-null</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Recursively spider a tree of blocks, returning all their comments.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>block</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Blockly.Block.html">Blockly.Block</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The block from which to start spidering.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line130">line 130</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Concatenated list of comments.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="blockToCode"><span class="type-signature"></span>blockToCode<span class="signature">(block)</span><span class="type-signature"> &rarr; {string|Array}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Generate code for the specified block (and attached blocks).
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>block</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Blockly.Block.html">Blockly.Block</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The block to generate code for.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line153">line 153</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    For statement blocks, the generated code.
+    For value blocks, an array containing the generated code and an
+    operator order value.  Returns '' if block is null.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prefixLines"><span class="type-signature"></span>prefixLines<span class="signature">(text, prefix)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Prepend a common prefix onto each line of code.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The lines of code.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The common prefix.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The prefixed lines of code.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="statementToCode"><span class="type-signature"></span>statementToCode<span class="signature">(block<span class="signature-attributes">non-null</span>, name)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Generate code representing the statement.  Indent the code.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>block</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Blockly.Block.html">Blockly.Block</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The block containing the input.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the input.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line246">line 246</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Generated code or '' if no blocks are connected.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="valueToCode"><span class="type-signature"></span>valueToCode<span class="signature">(block<span class="signature-attributes">non-null</span>, name, order)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Generate code representing the specified value input.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>block</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Blockly.Block.html">Blockly.Block</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The block containing the input.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the input.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>order</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The maximum binding strength (minimum order value)
+    of any operators adjacent to "block".</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line199">line 199</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Generated code or '' if no blocks are connected or the
+    specified input does not exist.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="workspaceToCode"><span class="type-signature"></span>workspaceToCode<span class="signature">(workspace)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Generate code for all blocks in the workspace to the specified language.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>workspace</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Blockly.Workspace.html">Blockly.Workspace</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Workspace to generate code from.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_generator.js.html">core/generator.js</a>, <a href="core_generator.js.html#line78">line 78</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Generated code.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:46 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/procedures.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/procedures.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @license
+ * Visual Blocks Editor
+ *
+ * Copyright 2012 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Utility functions for handling procedures.
+ * @author fraser@google.com (Neil Fraser)
+ */
+'use strict';
+
+goog.provide('Blockly.Procedures');
+
+// TODO(scr): Fix circular dependencies
+// goog.require('Blockly.Block');
+goog.require('Blockly.Field');
+goog.require('Blockly.Names');
+goog.require('Blockly.Workspace');
+
+
+/**
+ * Category to separate procedure names from variables and generated functions.
+ */
+Blockly.Procedures.NAME_TYPE = 'PROCEDURE';
+
+/**
+ * Find all user-created procedure definitions in a workspace.
+ * @param {!Blockly.Workspace} root Root workspace.
+ * @return {!Array.&lt;!Array.&lt;!Array>>} Pair of arrays, the
+ *     first contains procedures without return variables, the second with.
+ *     Each procedure is defined by a three-element list of name, parameter
+ *     list, and return value boolean.
+ */
+Blockly.Procedures.allProcedures = function(root) {
+  var blocks = root.getAllBlocks();
+  var proceduresReturn = [];
+  var proceduresNoReturn = [];
+  for (var i = 0; i &lt; blocks.length; i++) {
+    if (blocks[i].getProcedureDef) {
+      var tuple = blocks[i].getProcedureDef();
+      if (tuple) {
+        if (tuple[2]) {
+          proceduresReturn.push(tuple);
+        } else {
+          proceduresNoReturn.push(tuple);
+        }
+      }
+    }
+  }
+  proceduresNoReturn.sort(Blockly.Procedures.procTupleComparator_);
+  proceduresReturn.sort(Blockly.Procedures.procTupleComparator_);
+  return [proceduresNoReturn, proceduresReturn];
+};
+
+/**
+ * Comparison function for case-insensitive sorting of the first element of
+ * a tuple.
+ * @param {!Array} ta First tuple.
+ * @param {!Array} tb Second tuple.
+ * @return {number} -1, 0, or 1 to signify greater than, equality, or less than.
+ * @private
+ */
+Blockly.Procedures.procTupleComparator_ = function(ta, tb) {
+  return ta[0].toLowerCase().localeCompare(tb[0].toLowerCase());
+};
+
+/**
+ * Ensure two identically-named procedures don't exist.
+ * @param {string} name Proposed procedure name.
+ * @param {!Blockly.Block} block Block to disambiguate.
+ * @return {string} Non-colliding name.
+ */
+Blockly.Procedures.findLegalName = function(name, block) {
+  if (block.isInFlyout) {
+    // Flyouts can have multiple procedures called 'do something'.
+    return name;
+  }
+  while (!Blockly.Procedures.isLegalName(name, block.workspace, block)) {
+    // Collision with another procedure.
+    var r = name.match(/^(.*?)(\d+)$/);
+    if (!r) {
+      name += '2';
+    } else {
+      name = r[1] + (parseInt(r[2], 10) + 1);
+    }
+  }
+  return name;
+};
+
+/**
+ * Does this procedure have a legal name?  Illegal names include names of
+ * procedures already defined.
+ * @param {string} name The questionable name.
+ * @param {!Blockly.Workspace} workspace The workspace to scan for collisions.
+ * @param {Blockly.Block=} opt_exclude Optional block to exclude from
+ *     comparisons (one doesn't want to collide with oneself).
+ * @return {boolean} True if the name is legal.
+ */
+Blockly.Procedures.isLegalName = function(name, workspace, opt_exclude) {
+  var blocks = workspace.getAllBlocks();
+  // Iterate through every block and check the name.
+  for (var i = 0; i &lt; blocks.length; i++) {
+    if (blocks[i] == opt_exclude) {
+      continue;
+    }
+    if (blocks[i].getProcedureDef) {
+      var procName = blocks[i].getProcedureDef();
+      if (Blockly.Names.equals(procName[0], name)) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+/**
+ * Rename a procedure.  Called by the editable field.
+ * @param {string} text The proposed new name.
+ * @return {string} The accepted name.
+ * @this {!Blockly.Field}
+ */
+Blockly.Procedures.rename = function(text) {
+  // Strip leading and trailing whitespace.  Beyond this, all names are legal.
+  text = text.replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
+
+  // Ensure two identically-named procedures don't exist.
+  text = Blockly.Procedures.findLegalName(text, this.sourceBlock_);
+  // Rename any callers.
+  var blocks = this.sourceBlock_.workspace.getAllBlocks();
+  for (var i = 0; i &lt; blocks.length; i++) {
+    if (blocks[i].renameProcedure) {
+      blocks[i].renameProcedure(this.text_, text);
+    }
+  }
+  return text;
+};
+
+/**
+ * Construct the blocks required by the flyout for the procedure category.
+ * @param {!Blockly.Workspace} workspace The workspace contianing procedures.
+ * @return {!Array.&lt;!Element>} Array of XML block elements.
+ */
+Blockly.Procedures.flyoutCategory = function(workspace) {
+  var xmlList = [];
+  if (Blockly.Blocks['procedures_defnoreturn']) {
+    // &lt;block type="procedures_defnoreturn" gap="16">&lt;/block>
+    var block = goog.dom.createDom('block');
+    block.setAttribute('type', 'procedures_defnoreturn');
+    block.setAttribute('gap', 16);
+    xmlList.push(block);
+  }
+  if (Blockly.Blocks['procedures_defreturn']) {
+    // &lt;block type="procedures_defreturn" gap="16">&lt;/block>
+    var block = goog.dom.createDom('block');
+    block.setAttribute('type', 'procedures_defreturn');
+    block.setAttribute('gap', 16);
+    xmlList.push(block);
+  }
+  if (Blockly.Blocks['procedures_ifreturn']) {
+    // &lt;block type="procedures_ifreturn" gap="16">&lt;/block>
+    var block = goog.dom.createDom('block');
+    block.setAttribute('type', 'procedures_ifreturn');
+    block.setAttribute('gap', 16);
+    xmlList.push(block);
+  }
+  if (xmlList.length) {
+    // Add slightly larger gap between system blocks and user calls.
+    xmlList[xmlList.length - 1].setAttribute('gap', 24);
+  }
+
+  function populateProcedures(procedureList, templateName) {
+    for (var i = 0; i &lt; procedureList.length; i++) {
+      var name = procedureList[i][0];
+      var args = procedureList[i][1];
+      // &lt;block type="procedures_callnoreturn" gap="16">
+      //   &lt;mutation name="do something">
+      //     &lt;arg name="x">&lt;/arg>
+      //   &lt;/mutation>
+      // &lt;/block>
+      var block = goog.dom.createDom('block');
+      block.setAttribute('type', templateName);
+      block.setAttribute('gap', 16);
+      var mutation = goog.dom.createDom('mutation');
+      mutation.setAttribute('name', name);
+      block.appendChild(mutation);
+      for (var t = 0; t &lt; args.length; t++) {
+        var arg = goog.dom.createDom('arg');
+        arg.setAttribute('name', args[t]);
+        mutation.appendChild(arg);
+      }
+      xmlList.push(block);
+    }
+  }
+
+  var tuple = Blockly.Procedures.allProcedures(workspace);
+  populateProcedures(tuple[0], 'procedures_callnoreturn');
+  populateProcedures(tuple[1], 'procedures_callreturn');
+  return xmlList;
+};
+
+/**
+ * Find all the callers of a named procedure.
+ * @param {string} name Name of procedure.
+ * @param {!Blockly.Workspace} workspace The workspace to find callers in.
+ * @return {!Array.&lt;!Blockly.Block>} Array of caller blocks.
+ */
+Blockly.Procedures.getCallers = function(name, workspace) {
+  var callers = [];
+  var blocks = workspace.getAllBlocks();
+  // Iterate through every block and check the name.
+  for (var i = 0; i &lt; blocks.length; i++) {
+    if (blocks[i].getProcedureCall) {
+      var procName = blocks[i].getProcedureCall();
+      // Procedure name may be null if the block is only half-built.
+      if (procName &amp;&amp; Blockly.Names.equals(procName, name)) {
+        callers.push(blocks[i]);
+      }
+    }
+  }
+  return callers;
+};
+
+/**
+ * When a procedure definition is disposed of, find and dispose of all its
+ *     callers.
+ * @param {string} name Name of deleted procedure definition.
+ * @param {!Blockly.Workspace} workspace The workspace to delete callers from.
+ */
+Blockly.Procedures.disposeCallers = function(name, workspace) {
+  var callers = Blockly.Procedures.getCallers(name, workspace);
+  for (var i = 0; i &lt; callers.length; i++) {
+    callers[i].dispose(true, false);
+  }
+};
+
+/**
+ * When a procedure definition changes its parameters, find and edit all its
+ * callers.
+ * @param {!Blockly.Block} defBlock Procedure definition block.
+ */
+Blockly.Procedures.mutateCallers = function(defBlock) {
+  var oldRecordUndo = Blockly.Events.recordUndo;
+  var name = defBlock.getProcedureDef()[0];
+  var xmlElement = defBlock.mutationToDom(true);
+  var callers = Blockly.Procedures.getCallers(name, defBlock.workspace);
+  for (var i = 0, caller; caller = callers[i]; i++) {
+    var oldMutationDom = caller.mutationToDom();
+    var oldMutation = oldMutationDom &amp;&amp; Blockly.Xml.domToText(oldMutationDom);
+    caller.domToMutation(xmlElement);
+    var newMutationDom = caller.mutationToDom();
+    var newMutation = newMutationDom &amp;&amp; Blockly.Xml.domToText(newMutationDom);
+    if (oldMutation != newMutation) {
+      // Fire a mutation on every caller block.  But don't record this as an
+      // undo action since it is deterministically tied to the procedure's
+      // definition mutation.
+      Blockly.Events.recordUndo = false;
+      Blockly.Events.fire(new Blockly.Events.Change(
+          caller, 'mutation', null, oldMutation, newMutation));
+      Blockly.Events.recordUndo = oldRecordUndo;
+    }
+  }
+};
+
+/**
+ * Find the definition block for the named procedure.
+ * @param {string} name Name of procedure.
+ * @param {!Blockly.Workspace} workspace The workspace to search.
+ * @return {Blockly.Block} The procedure definition block, or null not found.
+ */
+Blockly.Procedures.getDefinition = function(name, workspace) {
+  var blocks = workspace.getAllBlocks();
+  for (var i = 0; i &lt; blocks.length; i++) {
+    if (blocks[i].getProcedureDef) {
+      var tuple = blocks[i].getProcedureDef();
+      if (tuple &amp;&amp; Blockly.Names.equals(tuple[0], name)) {
+        return blocks[i];
+      }
+    }
+  }
+  return null;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:43 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="procedures_defreturn" id="YLVM7j!*5$DOMdo|^LtO" x="138" y="163">
+    <field name="NAME">Measurement</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+    <statement name="STACK">
+      <block type="dodavanje_conditiona" id=";J7JkTls[0[R|`Slot1A">
+        <value name="host">
+          <block type="text" id="5wMYVT3!OEPtVFd:gZsD">
+            <field name="TEXT">APH</field>
+          </block>
+        </value>
+        <value name="condition">
+          <block type="text" id="O.x.C{9S2mG*Ry.p;uSf">
+            <field name="TEXT">&gt;&gt; Hardware:</field>
+          </block>
+        </value>
+        <next>
+          <block type="startanje_ploce" id="J!|h%KTk$s!?9RZ8gcXC">
+            <value name="state">
+              <block type="math_number" id="M%!NRAre9zIe585J^unS">
+                <field name="NUM">4</field>
+              </block>
+            </value>
+            <next>
+              <block type="klema_30" id="=;odN/+BG|T$QM%AC21l">
+                <next>
+                  <block type="stanje_ploce" id="(;8V8O[My!oWAO[C8=/7">
+                    <field name="positive_check">FALSE</field>
+                    <value name="state">
+                      <block type="math_number" id="7o.p=oq??{uPSfTHNN~)">
+                        <field name="NUM">4</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="provjera_conditiona" id=";:+VcFE.CysxP{r!:VO0">
+                        <field name="positive_check">FALSE</field>
+                        <value name="host">
+                          <block type="text" id="fa]RgZC~_uD/{U`j|Lt$">
+                            <field name="TEXT">APH</field>
+                          </block>
+                        </value>
+                        <value name="condition">
+                          <block type="text" id="-%@3[GES7bOU7h^Z%*y9">
+                            <field name="TEXT">&gt;&gt; Hardware:</field>
+                          </block>
+                        </value>
+                        <value name="timeout">
+                          <block type="math_number" id="oI3^?tdsI%Xpkj5kxsls">
+                            <field name="NUM">10</field>
+                          </block>
+                        </value>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="logic_boolean" id="Zs[$orA-jh~{rPK4n?2t">
+        <field name="BOOL">TRUE</field>
+      </block>
+    </value>
+  </block>
+</xml>

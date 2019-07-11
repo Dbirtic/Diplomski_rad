@@ -1,0 +1,48 @@
+<xml xmlns="http://www.w3.org/1999/xhtml"><block type="factory_base" id="9+n+)eKz;uzj,mJK7+5$" deletable="false" movable="false" x="0" y="0">
+    <mutation connections="NONE"></mutation>
+    <field name="NAME">TEDD_HelloWorld</field>
+    <field name="INLINE">AUTO</field>
+    <field name="CONNECTIONS">NONE</field>
+    <statement name="INPUTS">
+      <block type="input_value" id="p[QEw=r{^6=MvOvIt`NK">
+        <field name="INPUTNAME">NAME</field>
+        <field name="ALIGN">LEFT</field>
+        <statement name="FIELDS">
+          <block type="field_static" id="wtK6qr:Jl!/M5F/=_jb(">
+            <field name="TEXT">TEDD Hello World</field>
+            <next>
+              <block type="field_dropdown" id="f*c,%Uw;-|(q*o|YuiJ4">
+                <mutation options="[&quot;text&quot;,&quot;text&quot;,&quot;text&quot;]"></mutation>
+                <field name="FIELDNAME">choose</field>
+                <field name="USER0">Dražen</field>
+                <field name="CPU0">drazen</field>
+                <field name="USER1">Pavao</field>
+                <field name="CPU1">pavao</field>
+                <field name="USER2">Marko</field>
+                <field name="CPU2">marko</field>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="TYPE">
+          <shadow type="type_null" id="JeWTq+K}%*-dI7IQcMAE"></shadow>
+        </value>
+      </block>
+    </statement>
+    <value name="TOOLTIP">
+      <block type="text" id="rV33-q8uEVFMKkQj4)0P" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="HELPURL">
+      <block type="text" id="l=I_}4lc1S3s1%q:,=X4" deletable="false" movable="false">
+        <field name="TEXT"></field>
+      </block>
+    </value>
+    <value name="COLOUR">
+      <block type="colour_hue" id="Rv,b{$?JhdWBe,xMw7bW">
+        <mutation colour="#5ba56d"></mutation>
+        <field name="HUE">135</field>
+      </block>
+    </value>
+  </block></xml>

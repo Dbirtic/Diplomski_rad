@@ -1,0 +1,69 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="import_custom" id="v?0ZbZ|JaTPbk6uDOm[l" x="138" y="88">
+    <field name="import_value">Utils.utilities</field>
+  </block>
+  <block type="import_custom" id="/OF9(5NLVluse^98.(UI" x="138" y="113">
+    <field name="import_value">Utils.API_Diagnostic</field>
+  </block>
+  <block type="procedures_defreturn" id="YLVM7j!*5$DOMdo|^LtO" x="138" y="163">
+    <field name="NAME">Mesurement</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+    <statement name="STACK">
+      <block type="startanje_ploce" id="O_sxIc#2M1y:Nk8Fxn@,">
+        <value name="state">
+          <block type="math_number" id=")2m5Q%:r19:,$+fhajYD">
+            <field name="NUM">4</field>
+          </block>
+        </value>
+        <value name="step">
+          <block type="math_number" id="tx]ILC-mfbE{gCRM7+7S">
+            <field name="NUM">1</field>
+          </block>
+        </value>
+        <next>
+          <block type="klema_15" id="T/gFFSZ8$!$!({mSJZ+R">
+            <value name="step">
+              <block type="math_number" id="Dl4:iW;]^=d0R?HnDePx">
+                <field name="NUM">2</field>
+              </block>
+            </value>
+            <next>
+              <block type="stanje_ploce" id="R:%:*!0cfrk:9g;TB;[X">
+                <value name="state">
+                  <block type="math_number" id="!L1GH{.|sV:;fTJ.g{[.">
+                    <field name="NUM">4</field>
+                  </block>
+                </value>
+                <value name="step">
+                  <block type="math_number" id="f`to^766PvO0L`,FGg.[">
+                    <field name="NUM">3</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="provjera_dtc_statusa" id="+s+AQ-rXRz/#jl%pooGg">
+                    <value name="dtc">
+                      <block type="text" id="]d(IRR,hjw;`N:-#[U48">
+                        <field name="TEXT">0x20501B</field>
+                      </block>
+                    </value>
+                    <value name="step">
+                      <block type="math_number" id="Y%R6tlt9g[UTVy~tRp3L">
+                        <field name="NUM">4</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="logic_boolean" id="Zs[$orA-jh~{rPK4n?2t">
+        <field name="BOOL">TRUE</field>
+      </block>
+    </value>
+  </block>
+</xml>

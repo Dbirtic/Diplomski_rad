@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google" value="notranslate">
+  <title>Blockly Demo:</title>
+  <link rel="stylesheet" href="style.css">
+  <!--<script src="/storage.js"></script>-->
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+  <script src="../../python_compressed.js"></script>
+  <!-- <script src="../../php_compressed.js"></script>
+  <script src="../../lua_compressed.js"></script>
+  <script src="../../dart_compressed.js"></script> -->
+  <script src="code.js"></script>
+  <!-- <script src="../../../TEDD/TEDD_helloworldBLOCK.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_helloworldBLOCK_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_Testblock2.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_Testblock2_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_TestblockVariableInput.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_TestblockVariableInput_generator.js"></script> -->
+  <!--<script src="../../../TEDD/TED_TestBlocks.js"></script>
+  <script src="../../../TEDD/TED_TestBlocks_generator.js"></script>-->
+  <!-- <script src="../../../TEDD/tedd_print_input_variable.js"></script> -->
+  <!-- <script src="../../../TEDD/tedd_print_input_variable_js_generator.js"></script> -->
+  <script src="CoreJSFunctions.js"></script>
+  <!-- <script src="../../../TEDD/TEDD_TCTTemplate.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_TCTTemplate_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_import.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_import_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/tedd_import_custom.js"></script> -->
+  <!-- <script src="../../../TEDD/tedd_import_custom_generator.js"></script> -->
+  
+  <!--<script src="TEDD_Blocks.js"></script>
+  <script src="TEDD_Blocks_generator.js"></script> -->
+  
+  <script src="/load_blocks"></script>
+
+  <!-- Bootstrap/CSS headers -->
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"><a class="navbar-brand" href="/" ">Blockly</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          <!-- <a class="nav-item nav-link" href="/add_blocks">Add Block</a> -->
+          <a class="nav-item nav-link" href="/blocks">List of Added Blocks</a>
+          <a class="nav-item nav-link" href="/block_factory">Block Factory</a>
+          <!-- <a class="nav-item nav-link" href="/py_parse">Python Parser</a> -->
+          <a class="nav-item nav-link" href='/previous_tedd'>Previous Solution</a>
+        </div>
+      </div>
+    </nav>
+
+	<input type="file" id="files" name="files[]" accept=".xml" />
+	<script>
+		function handleFileSelect(evt) {
+			//alert('Handler');
+			var files = evt.target.files; // FileList object
+			f = files[0];
+			var reader = new FileReader();
+			var text;
+
+			//alert('Reading started!');
+			reader.onload = function(e) {
+				text = reader.result;
+				alert(text);
+				document.getElementById('content_xml').value = text;
+				//testFunction(text);
+			}
+
+			reader.readAsText(f);
+			
+			//alert('Reading ended!');
+		}
+
+		document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+	</script>
+
+  <table width="100%" height="100%">
+    <tr>
+      <td>
+        <h1><a href="https://developers.google.com/blockly/">Blockly</a>&rlm; &gt;
+          <a href="../index.html">Demos</a>&rlm; &gt;
+          <span id="title">...</span>
+        </h1>
+      </td>
+      <td class="farSide">
+        <select id="languageMenu"></select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=2>
+        <table width="100%">
+          <tr id="tabRow" height="1em">
+            <td id="tab_blocks" class="tabon">...</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_javascript" class="taboff">JavaScript</td>
+			<td id="save_js" class="taboff" onclick="saveJSToFile()">Save</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_python" class="taboff">Python</td>
+			<td id="save_js" class="taboff" onclick="savePyToFile()">Save</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_php" class="taboff">PHP</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_lua" class="taboff">Lua</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_dart" class="taboff">Dart</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_xml" class="taboff">XML</td>
+			<!--<td id="save_xml" class="taboff" onclick="toXml()">Save</td>-->
+			<td id="save_xml" class="taboff" onclick="saveXML()">Save</td>
+			<!--<td id="load_xml" class="taboff" onclick="testFunction('Proba')">Load</td>-->
+            <td class="tabmax">
+              <button id="trashButton" class="notext" title="...">
+                <img src='../../media/1x1.gif' class="trash icon21">
+              </button>
+              <button id="linkButton" class="notext" title="...">
+                <img src='../../media/1x1.gif' class="link icon21">
+              </button>
+              <button id="runButton" class="notext primary" title="...">
+                <img src='../../media/1x1.gif' class="run icon21">
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td height="99%" colspan=2 id="content_area">
+      </td>
+    </tr>
+  </table>
+  
+  <div id="content_blocks" class="content"></div>
+  <pre id="content_javascript" class="content"></pre>
+  <pre id="content_python" class="content"></pre>
+  <pre id="content_php" class="content"></pre>
+  <pre id="content_lua" class="content"></pre>
+  <pre id="content_dart" class="content"></pre>
+  <textarea id="content_xml" class="content" wrap="off"></textarea>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+        <block type="controls_if"></block>
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+        <block type="logic_negate"></block>
+        <block type="logic_boolean"></block>
+        <block type="logic_null"></block>
+        <block type="logic_ternary"></block>
+    </category>
+    <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+        <block type="controls_repeat_ext">
+        <value name="TIMES">
+            <block type="math_number">
+                <field name="NUM">10</field>
+            </block>
+        </value>
+        </block>
+        <block type="controls_whileUntil"></block>
+        <block type="controls_for">
+            <value name="FROM">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="TO">
+              <shadow type="math_number">
+                <field name="NUM">10</field>
+              </shadow>
+            </value>
+            <value name="BY">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="controls_forEach"></block>
+          <block type="controls_flow_statements"></block>
+    </category>
+    <category name="Math" colour="%{BKY_MATH_HUE}">
+        <block type="math_number">
+            <field name="NUM">123</field>
+        </block>
+        <block type="math_arithmetic"></block>
+        <block type="math_single"></block>
+        <block type="math_trig"></block>
+        <block type="math_constant"></block>
+        <block type="math_number_property"></block>
+        <block type="math_round">
+            <value name="NUM">
+                <field name="NUM">3.1</field>
+            </value>
+        </block>
+        <block type="math_modulo"></block>
+        <block type="math_random_int"></block>
+        <block type="math_random_float"></block>
+    </category>
+    <category name="Text" colour="%{BKY_TEXTS_HUE}">
+          <block type="text"></block>
+          <block type="text_append"></block>
+          <block type="text_length"></block>
+          <block type="text_print"></block>
+          <block type="text_join"></block>
+    </category>
+
+    <category name="TEDD_test" colour="#FF0c0c" id="TEDD_test">
+      
+      <block type="tedd_test2"></block>
+      <block type="tedd_helloworld"></block>
+      <block type="import">
+        <field name="import_value">import_time</field>
+      </block>
+    
+      <block type="import_custom">
+          <field name="import_value">custom_import</field>
+      </block>
+    
+    
+      <block type="import_custom">
+        <field name="import_value">Utils.utilities</field>
+        <next>
+          <block type="klema_15">
+            <value name="errorID">
+              <block type="math_number">
+                <field name="positive_check">TRUE</field>
+                <field name="NUM">0</field>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+      
+      <block type="start_board">
+        <value name="state">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+        <value name="errorID">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+      </block>
+      
+      <block type="import_custom">
+        <field name="import_value">Utils.API_Diagnostic</field>
+        <next>
+          <block type="check_dtc_status">
+            <value name="dtc">
+              <block type="text">
+                <field name="TEXT"></field>
+              </block>
+            </value>
+            <value name="errorID">
+              <block type="math_number">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+    
+</category>
+
+    <category name="Test" colour="#00aa44" id="test">
+      <block type="test_block"></block>
+      <block type="test_block2"></block>
+      <block type="citac_pythona"></block>
+      <block type="input_block"></block>
+    
+
+<block type="zbrajanje" class="zbrajanje"></block>
+
+
+<block type="funkcija_zbr" class="funkcija_zbr"></block>
+<block type="mnozenje" class="mnozenje"></block>
+<block type="mnozenje2" class="mnozenje2"></block>
+</category>
+</xml>
+
+</body>
+</html>

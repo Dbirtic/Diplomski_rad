@@ -1,0 +1,54 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables>
+    <variable type="" id="gK=T,L:XW?*41a_}gN_y">count</variable>
+  </variables>
+  <block type="variables_set" id="L#J?5!{IfwI#Qk*L:];)" x="163" y="88">
+    <field name="VAR" id="gK=T,L:XW?*41a_}gN_y" variabletype="">count</field>
+    <value name="VALUE">
+      <block type="math_number" id="ML`CwC@Vl6fIBbscE_m[">
+        <field name="NUM">1</field>
+      </block>
+    </value>
+    <next>
+      <block type="controls_repeat_ext" id="XPYLWQy}F5N}=#?zHCpc">
+        <value name="TIMES">
+          <shadow type="math_number" id=".j;qE#1#[Gs$3G_?mDm.">
+            <field name="NUM">5</field>
+          </shadow>
+        </value>
+        <statement name="DO">
+          <block type="tedd_print_input_variable" id=";`rQasm`^^;ls=8cHVge">
+            <value name="NAME">
+              <block type="variables_get" id="hXq8_5_L5:q1KpfrxV~_">
+                <field name="VAR" id="gK=T,L:XW?*41a_}gN_y" variabletype="">count</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="TyuBEXIp}ver`qcXb[p4">
+                <field name="VAR" id="gK=T,L:XW?*41a_}gN_y" variabletype="">count</field>
+                <value name="VALUE">
+                  <block type="math_arithmetic" id="BW-2F_]A33har;4fj2s[">
+                    <field name="OP">ADD</field>
+                    <value name="A">
+                      <shadow type="math_number" id="uvs^g|vDHcYZomh2ub-H">
+                        <field name="NUM">1</field>
+                      </shadow>
+                      <block type="variables_get" id="Zmbx,+#aUtic6cAf|daO">
+                        <field name="VAR" id="gK=T,L:XW?*41a_}gN_y" variabletype="">count</field>
+                      </block>
+                    </value>
+                    <value name="B">
+                      <shadow type="math_number" id="ue:}s|ncX+sHZ:RS/,.+">
+                        <field name="NUM">1</field>
+                      </shadow>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>

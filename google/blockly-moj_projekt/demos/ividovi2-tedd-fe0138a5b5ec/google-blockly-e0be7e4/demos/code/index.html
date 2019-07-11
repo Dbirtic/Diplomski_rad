@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="google" value="notranslate">
+  <title>Blockly Demo:</title>
+  <link rel="stylesheet" href="style.css">
+  <!--<script src="/storage.js"></script>-->
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+  <script src="../../python_compressed.js"></script>
+  <script src="../../php_compressed.js"></script>
+  <script src="../../lua_compressed.js"></script>
+  <script src="../../dart_compressed.js"></script>
+  <script src="code.js"></script>
+  <!-- <script src="../../../TEDD/TEDD_helloworldBLOCK.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_helloworldBLOCK_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_Testblock2.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_Testblock2_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_TestblockVariableInput.js"></script> -->
+  <!-- <script src="../../../TEDD/TED_TestblockVariableInput_generator.js"></script> -->
+  <!--<script src="../../../TEDD/TED_TestBlocks.js"></script>
+  <script src="../../../TEDD/TED_TestBlocks_generator.js"></script>-->
+  <!-- <script src="../../../TEDD/tedd_print_input_variable.js"></script> -->
+  <!-- <script src="../../../TEDD/tedd_print_input_variable_js_generator.js"></script> -->
+  <script src="../../../TEDD/CoreJSFunctions.js"></script>  
+  <!-- <script src="../../../TEDD/TEDD_TCTTemplate.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_TCTTemplate_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_import.js"></script> -->
+  <!-- <script src="../../../TEDD/TEDD_import_generator.js"></script> -->
+  <!-- <script src="../../../TEDD/tedd_import_custom.js"></script> -->
+  <!-- <script src="../../../TEDD/tedd_import_custom_generator.js"></script> -->
+  
+  <script src="../../../TEDD/TEDD_Blocks.js"></script>
+  <script src="../../../TEDD/TEDD_Blocks_generator.js"></script>
+  
+ 
+  
+  <script>
+	/*if (window.File && window.FileReader && window.FileList && window.Blob) {
+		// Great success! All the File APIs are supported.
+		//alert('The File APIs is fully supported in this browser.');
+	} else {
+		alert('The File APIs are not fully supported in this browser.');
+	}
+	
+	document.getElementById("files").addEventListener("change", function(){
+		alert('Test');
+	});*/
+
+  </script>
+  
+</head>
+<body>
+
+	<input type="file" id="files" name="files[]" accept=".xml" />
+	<script>
+		function handleFileSelect(evt) {
+			//alert('Handler');
+			var files = evt.target.files; // FileList object
+			f = files[0];
+			var reader = new FileReader();
+			var text;
+
+			//alert('Reading started!');
+			reader.onload = function(e) {
+				text = reader.result;
+				alert(text);
+				document.getElementById('content_xml').value = text;
+				//testFunction(text);
+			}
+
+			reader.readAsText(f);
+			
+			//alert('Reading ended!');
+		}
+
+		document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+	</script>
+
+  <table width="100%" height="100%">
+    <tr>
+      <td>
+        <h1><a href="https://developers.google.com/blockly/">Blockly</a>&rlm; &gt;
+          <a href="../index.html">Demos</a>&rlm; &gt;
+          <span id="title">...</span>
+        </h1>
+      </td>
+      <td class="farSide">
+        <select id="languageMenu"></select>
+      </td>
+    </tr>
+    <tr>
+      <td colspan=2>
+        <table width="100%">
+          <tr id="tabRow" height="1em">
+            <td id="tab_blocks" class="tabon">...</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_javascript" class="taboff">JavaScript</td>
+			<td id="save_js" class="taboff" onclick="saveJSToFile()">Save</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_python" class="taboff">Python</td>
+			<td id="save_js" class="taboff" onclick="savePyToFile()">Save</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_php" class="taboff">PHP</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_lua" class="taboff">Lua</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_dart" class="taboff">Dart</td>
+            <td class="tabmin">&nbsp;</td>
+            <td id="tab_xml" class="taboff">XML</td>
+			<!--<td id="save_xml" class="taboff" onclick="toXml()">Save</td>-->
+			<td id="save_xml" class="taboff" onclick="saveXML()">Save</td>
+			<!--<td id="load_xml" class="taboff" onclick="testFunction('Proba')">Load</td>-->
+            <td class="tabmax">
+              <button id="trashButton" class="notext" title="...">
+                <img src='../../media/1x1.gif' class="trash icon21">
+              </button>
+              <button id="linkButton" class="notext" title="...">
+                <img src='../../media/1x1.gif' class="link icon21">
+              </button>
+              <button id="runButton" class="notext primary" title="...">
+                <img src='../../media/1x1.gif' class="run icon21">
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td height="99%" colspan=2 id="content_area">
+      </td>
+    </tr>
+  </table>
+  
+  <div id="content_blocks" class="content"></div>
+  <pre id="content_javascript" class="content"></pre>
+  <pre id="content_python" class="content"></pre>
+  <pre id="content_php" class="content"></pre>
+  <pre id="content_lua" class="content"></pre>
+  <pre id="content_dart" class="content"></pre>
+  <textarea id="content_xml" class="content" wrap="off"></textarea>
+
+  <xml id="toolbox" style="display: none">
+    <category name="%{BKY_CATLOGIC}" colour="%{BKY_LOGIC_HUE}">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
+      <block type="logic_ternary"></block>
+    </category>
+    <category name="%{BKY_CATLOOPS}" colour="%{BKY_LOOPS_HUE}">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+      <block type="controls_for">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+        <value name="BY">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
+    </category>
+    <category name="%{BKY_CATMATH}" colour="%{BKY_MATH_HUE}">
+      <block type="math_number"></block>
+      <block type="math_arithmetic">
+        <value name="A">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="B">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_single">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">9</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_trig">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">45</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_constant"></block>
+      <block type="math_number_property">
+        <value name="NUMBER_TO_CHECK">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_round">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">3.1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_on_list"></block>
+      <block type="math_modulo">
+        <value name="DIVIDEND">
+          <shadow type="math_number">
+            <field name="NUM">64</field>
+          </shadow>
+        </value>
+        <value name="DIVISOR">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_constrain">
+        <value name="VALUE">
+          <shadow type="math_number">
+            <field name="NUM">50</field>
+          </shadow>
+        </value>
+        <value name="LOW">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="HIGH">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_random_int">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="math_random_float"></block>
+    </category>
+    <category name="%{BKY_CATTEXT}" colour="%{BKY_TEXTS_HUE}">
+      <block type="text"></block>
+      <block type="text_join"></block>
+      <block type="text_append">
+        <value name="TEXT">
+          <shadow type="text"></shadow>
+        </value>
+      </block>
+      <block type="text_length">
+        <value name="VALUE">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_isEmpty">
+        <value name="VALUE">
+          <shadow type="text">
+            <field name="TEXT"></field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_indexOf">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{textVariable}</field>
+          </block>
+        </value>
+        <value name="FIND">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_charAt">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{textVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="text_getSubstring">
+        <value name="STRING">
+          <block type="variables_get">
+            <field name="VAR">{textVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="text_changeCase">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_trim">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_print">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="text_prompt_ext">
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">abc</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+    <category name="%{BKY_CATLISTS}" colour="%{BKY_LISTS_HUE}">
+      <block type="lists_create_with">
+        <mutation items="0"></mutation>
+      </block>
+      <block type="lists_create_with"></block>
+      <block type="lists_repeat">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">5</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="lists_length"></block>
+      <block type="lists_isEmpty"></block>
+      <block type="lists_indexOf">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_getIndex">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_setIndex">
+        <value name="LIST">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_getSublist">
+        <value name="LIST">
+          <block type="variables_get">
+            <field name="VAR">{listVariable}</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_split">
+        <value name="DELIM">
+          <shadow type="text">
+            <field name="TEXT">,</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="lists_sort"></block>
+    </category>
+    <category name="%{BKY_CATCOLOUR}" colour="%{BKY_COLOUR_HUE}">
+      <block type="colour_picker"></block>
+      <block type="colour_random"></block>
+      <block type="colour_rgb">
+        <value name="RED">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        <value name="GREEN">
+          <shadow type="math_number">
+            <field name="NUM">50</field>
+          </shadow>
+        </value>
+        <value name="BLUE">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="colour_blend">
+        <value name="COLOUR1">
+          <shadow type="colour_picker">
+            <field name="COLOUR">#ff0000</field>
+          </shadow>
+        </value>
+        <value name="COLOUR2">
+          <shadow type="colour_picker">
+            <field name="COLOUR">#3333ff</field>
+          </shadow>
+        </value>
+        <value name="RATIO">
+          <shadow type="math_number">
+            <field name="NUM">0.5</field>
+          </shadow>
+        </value>
+      </block>
+    </category>
+	
+	<category name="TEDD Category" colour="%{BKY_LOOPS_HUE}">
+    <block type="tedd_helloworld">
+      <field name="choose">drazen</field>
+    </block>
+	<block type="tedd_test2">
+      <field name="inputText">Test</field>
+    </block>
+	<block type="tedd_testvariableinput"></block>
+	<block type="tedd_print_input_variable"></block>
+	<block type="tedd_tcttemplate_blank"></block>
+	
+	<block type="import">
+		<field name="import_value">import_time</field>
+	</block>
+	
+	<block type="import_custom">
+		<field name="import_value">custom_import</field>
+	</block>
+	
+	<block type="klema_15"></block>
+	<block type="startanje_ploce"></block>
+	<block type="provjera_dtc_statusa"></block>
+	<block type="dodavanje_conditiona"></block>
+	<block type="provjera_conditiona"></block>
+	<block type="klema_30"></block>
+	<block type="stanje_ploce"></block>
+	
+	<block type="klema_15">
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="startanje_ploce">
+      <value name="state">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="provjera_dtc_statusa">
+      <value name="dtc">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="dodavanje_conditiona">
+      <value name="host">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="condition">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="provjera_conditiona">
+      <value name="host">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="condition">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="timeout">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="klema_30">
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+    <block type="stanje_ploce">
+      <value name="state">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="step">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+	<block type="startanje_ploce">
+      <value name="step">
+        <block type="variables_get">
+          <field name="VAR" id="vXorwE,,E0m4#Af*8C!4" variabletype="">step</field>
+        </block>
+      </value>
+    </block>
+	
+	<block type="import_custom">
+      <field name="import_value">Utils.utilities</field>
+      <next>
+        <block type="klema_15">
+          <value name="step">
+            <block type="math_number">
+              <field name="NUM">0</field>
+            </block>
+          </value>
+        </block>
+      </next>
+    </block>
+    <block type="import_custom">
+      <field name="import_value">Utils.API_Diagnostic</field>
+      <next>
+        <block type="provjera_dtc_statusa">
+          <value name="dtc">
+            <block type="text">
+              <field name="TEXT"></field>
+            </block>
+          </value>
+          <value name="step">
+            <block type="math_number">
+              <field name="NUM">0</field>
+            </block>
+          </value>
+        </block>
+      </next>
+    </block>
+	
+	<block type="tedd_header"></block>	
+	
+	<block type="tedd_header_int">
+      <value name="entry_name">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="int_value">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+	<block type="tedd_header_string">
+      <value name="entry_name">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="string_value">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+    </block>
+	
+	<block type="tedd_header_list">
+      <value name="entry_name">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="list_value">
+        <block type="lists_create_with">
+          <mutation items="2"></mutation>
+        </block>
+      </value>
+    </block>
+	
+	<block type="tedd_header">
+    <mutation items="3"></mutation>
+    <value name="ADD0">
+      <block type="tedd_header_int">
+        <value name="entry_name">
+          <block type="text">
+            <field name="TEXT">PTC_ID</field>
+          </block>
+        </value>
+        <value name="int_value">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <value name="ADD1">
+      <block type="tedd_header_string">
+        <value name="entry_name">
+          <block type="text">
+            <field name="TEXT">string_name</field>
+          </block>
+        </value>
+        <value name="string_value">
+          <block type="text">
+            <field name="TEXT">string_value</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <value name="ADD2">
+      <block type="tedd_header_list">
+        <value name="entry_name">
+          <block type="text">
+            <field name="TEXT">number_list</field>
+          </block>
+        </value>
+        <value name="list_value">
+          <block type="lists_create_with">
+            <mutation items="2"></mutation>
+            <value name="ADD0">
+              <block type="math_number">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+            <value name="ADD1">
+              <block type="math_number">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </value>
+  </block>
+	
+	</category>
+  
+    <sep></sep>
+    <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
+    <category name="%{BKY_CATFUNCTIONS}" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
+  </xml>
+
+</body>
+</html>

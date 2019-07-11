@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/trashcan.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/trashcan.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @license
+ * Visual Blocks Editor
+ *
+ * Copyright 2011 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Object representing a trash can icon.
+ * @author fraser@google.com (Neil Fraser)
+ */
+'use strict';
+
+goog.provide('Blockly.Trashcan');
+
+goog.require('goog.Timer');
+goog.require('goog.dom');
+goog.require('goog.math');
+goog.require('goog.math.Rect');
+
+
+/**
+ * Class for a trash can.
+ * @param {!Blockly.Workspace} workspace The workspace to sit in.
+ * @constructor
+ */
+Blockly.Trashcan = function(workspace) {
+  this.workspace_ = workspace;
+};
+
+/**
+ * Width of both the trash can and lid images.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.WIDTH_ = 47;
+
+/**
+ * Height of the trashcan image (minus lid).
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.BODY_HEIGHT_ = 44;
+
+/**
+ * Height of the lid image.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.LID_HEIGHT_ = 16;
+
+/**
+ * Distance between trashcan and bottom edge of workspace.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.MARGIN_BOTTOM_ = 20;
+
+/**
+ * Distance between trashcan and right edge of workspace.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.MARGIN_SIDE_ = 20;
+
+/**
+ * Extent of hotspot on all sides beyond the size of the image.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.MARGIN_HOTSPOT_ = 10;
+
+/**
+ * Current open/close state of the lid.
+ * @type {boolean}
+ */
+Blockly.Trashcan.prototype.isOpen = false;
+
+/**
+ * The SVG group containing the trash can.
+ * @type {Element}
+ * @private
+ */
+Blockly.Trashcan.prototype.svgGroup_ = null;
+
+/**
+ * The SVG image element of the trash can lid.
+ * @type {Element}
+ * @private
+ */
+Blockly.Trashcan.prototype.svgLid_ = null;
+
+/**
+ * Task ID of opening/closing animation.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.lidTask_ = 0;
+
+/**
+ * Current state of lid opening (0.0 = closed, 1.0 = open).
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.lidOpen_ = 0;
+
+/**
+ * Left coordinate of the trash can.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.left_ = 0;
+
+/**
+ * Top coordinate of the trash can.
+ * @type {number}
+ * @private
+ */
+Blockly.Trashcan.prototype.top_ = 0;
+
+/**
+ * Create the trash can elements.
+ * @return {!Element} The trash can's SVG group.
+ */
+Blockly.Trashcan.prototype.createDom = function() {
+  /* Here's the markup that will be generated:
+  &lt;g class="blocklyTrash">
+    &lt;clippath id="blocklyTrashBodyClipPath837493">
+      &lt;rect width="47" height="45" y="15">&lt;/rect>
+    &lt;/clippath>
+    &lt;image width="64" height="92" y="-32" xlink:href="media/sprites.png"
+        clip-path="url(#blocklyTrashBodyClipPath837493)">&lt;/image>
+    &lt;clippath id="blocklyTrashLidClipPath837493">
+      &lt;rect width="47" height="15">&lt;/rect>
+    &lt;/clippath>
+    &lt;image width="84" height="92" y="-32" xlink:href="media/sprites.png"
+        clip-path="url(#blocklyTrashLidClipPath837493)">&lt;/image>
+  &lt;/g>
+  */
+  this.svgGroup_ = Blockly.createSvgElement('g',
+      {'class': 'blocklyTrash'}, null);
+  var rnd = String(Math.random()).substring(2);
+  var clip = Blockly.createSvgElement('clipPath',
+      {'id': 'blocklyTrashBodyClipPath' + rnd},
+      this.svgGroup_);
+  Blockly.createSvgElement('rect',
+      {'width': this.WIDTH_, 'height': this.BODY_HEIGHT_,
+       'y': this.LID_HEIGHT_},
+      clip);
+  var body = Blockly.createSvgElement('image',
+      {'width': Blockly.SPRITE.width, 'height': Blockly.SPRITE.height, 'y': -32,
+       'clip-path': 'url(#blocklyTrashBodyClipPath' + rnd + ')'},
+      this.svgGroup_);
+  body.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+      this.workspace_.options.pathToMedia + Blockly.SPRITE.url);
+
+  var clip = Blockly.createSvgElement('clipPath',
+      {'id': 'blocklyTrashLidClipPath' + rnd},
+      this.svgGroup_);
+  Blockly.createSvgElement('rect',
+      {'width': this.WIDTH_, 'height': this.LID_HEIGHT_}, clip);
+  this.svgLid_ = Blockly.createSvgElement('image',
+      {'width': Blockly.SPRITE.width, 'height': Blockly.SPRITE.height, 'y': -32,
+       'clip-path': 'url(#blocklyTrashLidClipPath' + rnd + ')'},
+      this.svgGroup_);
+  this.svgLid_.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href',
+      this.workspace_.options.pathToMedia + Blockly.SPRITE.url);
+
+  Blockly.bindEvent_(this.svgGroup_, 'mouseup', this, this.click);
+  this.animateLid_();
+  return this.svgGroup_;
+};
+
+/**
+ * Initialize the trash can.
+ * @param {number} bottom Distance from workspace bottom to bottom of trashcan.
+ * @return {number} Distance from workspace bottom to the top of trashcan.
+ */
+Blockly.Trashcan.prototype.init = function(bottom) {
+  this.bottom_ = this.MARGIN_BOTTOM_ + bottom;
+  this.setOpen_(false);
+  return this.bottom_ + this.BODY_HEIGHT_ + this.LID_HEIGHT_;
+};
+
+/**
+ * Dispose of this trash can.
+ * Unlink from all DOM elements to prevent memory leaks.
+ */
+Blockly.Trashcan.prototype.dispose = function() {
+  if (this.svgGroup_) {
+    goog.dom.removeNode(this.svgGroup_);
+    this.svgGroup_ = null;
+  }
+  this.svgLid_ = null;
+  this.workspace_ = null;
+  goog.Timer.clear(this.lidTask_);
+};
+
+/**
+ * Move the trash can to the bottom-right corner.
+ */
+Blockly.Trashcan.prototype.position = function() {
+  var metrics = this.workspace_.getMetrics();
+  if (!metrics) {
+    // There are no metrics available (workspace is probably not visible).
+    return;
+  }
+  if (this.workspace_.RTL) {
+    this.left_ = this.MARGIN_SIDE_ + Blockly.Scrollbar.scrollbarThickness;
+  } else {
+    this.left_ = metrics.viewWidth + metrics.absoluteLeft -
+        this.WIDTH_ - this.MARGIN_SIDE_ - Blockly.Scrollbar.scrollbarThickness;
+  }
+  this.top_ = metrics.viewHeight + metrics.absoluteTop -
+      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
+  this.svgGroup_.setAttribute('transform',
+      'translate(' + this.left_ + ',' + this.top_ + ')');
+};
+
+/**
+ * Return the deletion rectangle for this trash can.
+ * @return {goog.math.Rect} Rectangle in which to delete.
+ */
+Blockly.Trashcan.prototype.getClientRect = function() {
+  var trashRect = this.svgGroup_.getBoundingClientRect();
+  return new goog.math.Rect(trashRect.left - this.MARGIN_HOTSPOT_,
+                            trashRect.top - this.MARGIN_HOTSPOT_,
+                            trashRect.width + 2 * this.MARGIN_HOTSPOT_,
+                            trashRect.height + 2 * this.MARGIN_HOTSPOT_);
+
+};
+
+/**
+ * Flip the lid open or shut.
+ * @param {boolean} state True if open.
+ * @private
+ */
+Blockly.Trashcan.prototype.setOpen_ = function(state) {
+  if (this.isOpen == state) {
+    return;
+  }
+  goog.Timer.clear(this.lidTask_);
+  this.isOpen = state;
+  this.animateLid_();
+};
+
+/**
+ * Rotate the lid open or closed by one step.  Then wait and recurse.
+ * @private
+ */
+Blockly.Trashcan.prototype.animateLid_ = function() {
+  this.lidOpen_ += this.isOpen ? 0.2 : -0.2;
+  this.lidOpen_ = goog.math.clamp(this.lidOpen_, 0, 1);
+  var lidAngle = this.lidOpen_ * 45;
+  this.svgLid_.setAttribute('transform', 'rotate(' +
+      (this.workspace_.RTL ? -lidAngle : lidAngle) + ',' +
+      (this.workspace_.RTL ? 4 : this.WIDTH_ - 4) + ',' +
+      (this.LID_HEIGHT_ - 2) + ')');
+  var opacity = goog.math.lerp(0.4, 0.8, this.lidOpen_);
+  this.svgGroup_.style.opacity = opacity;
+  if (this.lidOpen_ > 0 &amp;&amp; this.lidOpen_ &lt; 1) {
+    this.lidTask_ = goog.Timer.callOnce(this.animateLid_, 20, this);
+  }
+};
+
+/**
+ * Flip the lid shut.
+ * Called externally after a drag.
+ */
+Blockly.Trashcan.prototype.close = function() {
+  this.setOpen_(false);
+};
+
+/**
+ * Inspect the contents of the trash.
+ */
+Blockly.Trashcan.prototype.click = function() {
+  var dx = this.workspace_.startScrollX - this.workspace_.scrollX;
+  var dy = this.workspace_.startScrollY - this.workspace_.scrollY;
+  if (Math.sqrt(dx * dx + dy * dy) > Blockly.DRAG_RADIUS) {
+    return;
+  }
+  console.log('TODO: Inspect trash.');
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:43 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

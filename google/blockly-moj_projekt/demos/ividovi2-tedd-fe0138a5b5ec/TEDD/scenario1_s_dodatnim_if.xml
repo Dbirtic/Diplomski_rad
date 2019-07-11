@@ -1,0 +1,86 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables></variables>
+  <block type="import_custom" id="(yLd|33z]:[IcZi;xKD`" x="113" y="87">
+    <field name="import_value">Utils.utilities</field>
+  </block>
+  <block type="import_custom" id="(Xc(/v,7O]A#K2eS#5%5" x="113" y="113">
+    <field name="import_value">Utils.API_Diagnostic</field>
+  </block>
+  <block type="procedures_defreturn" id="2pI4T.PxF]5,}=F%Z2C9" x="113" y="188">
+    <field name="NAME">Measurement</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+    <statement name="STACK">
+      <block type="startanje_ploce" id="s~[ZkM=(E:+WhQ%[JXE9">
+        <value name="state">
+          <block type="math_number" id="C=fPm2:Io/mZ%UFi,BDQ">
+            <field name="NUM">4</field>
+          </block>
+        </value>
+        <next>
+          <block type="procedures_ifreturn" id="v+Y|4jD7M8.mR~W2QO%g">
+            <mutation value="1"></mutation>
+            <value name="CONDITION">
+              <block type="logic_negate" id="xm-)c2S_V3Ui][U.!+?e">
+                <value name="BOOL">
+                  <block type="klema_15" id="=dld+Pc_.;msZ/wtCZr:"></block>
+                </value>
+              </block>
+            </value>
+            <value name="VALUE">
+              <block type="logic_boolean" id="Rlg4SxT8hvU2J9E]bny_">
+                <field name="BOOL">FALSE</field>
+              </block>
+            </value>
+            <next>
+              <block type="procedures_ifreturn" id="U}o}WkwtaBAJEl/taf6I">
+                <mutation value="1"></mutation>
+                <value name="CONDITION">
+                  <block type="logic_negate" id="rg8@_MBT_1b1zA~I:p`P">
+                    <value name="BOOL">
+                      <block type="stanje_ploce" id="^:wxWKW8Xz`ebwSu[K[*">
+                        <value name="state">
+                          <block type="math_number" id="?!IA=Mg+O^;1qv70P{@+">
+                            <field name="NUM">4</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <value name="VALUE">
+                  <block type="logic_boolean" id="cu#X+v-MRFW3(2!KgPX=">
+                    <field name="BOOL">FALSE</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="procedures_ifreturn" id="Z@Ki8c~!W4IpZkNan(Mc">
+                    <mutation value="1"></mutation>
+                    <value name="CONDITION">
+                      <block type="provjera_dtc_statusa" id="(egTSD88OdFo#G4S.qzy">
+                        <value name="dtc">
+                          <block type="text" id="1@495`wPX5$Rpg_aO8]W">
+                            <field name="TEXT">0x20501B</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <value name="VALUE">
+                      <block type="logic_boolean" id="Z:o?qD4:P!A6*7epJIQ$">
+                        <field name="BOOL">FALSE</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="logic_boolean" id="*/B3tHnHVo[$=Y43.D{B">
+        <field name="BOOL">TRUE</field>
+      </block>
+    </value>
+  </block>
+</xml>

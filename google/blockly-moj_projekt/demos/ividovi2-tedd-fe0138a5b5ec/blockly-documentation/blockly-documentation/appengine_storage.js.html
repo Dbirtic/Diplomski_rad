@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: appengine/storage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: appengine/storage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @license
+ * Visual Blocks Editor
+ *
+ * Copyright 2012 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Loading and saving blocks with localStorage and cloud storage.
+ * @author q.neutron@gmail.com (Quynh Neutron)
+ */
+'use strict';
+
+// Create a namespace.
+var BlocklyStorage = {};
+
+/**
+ * Backup code blocks to localStorage.
+ * @param {!Blockly.WorkspaceSvg} workspace Workspace.
+ * @private
+ */
+BlocklyStorage.backupBlocks_ = function(workspace) {
+  if ('localStorage' in window) {
+    var xml = Blockly.Xml.workspaceToDom(workspace);
+    // Gets the current URL, not including the hash.
+    var url = window.location.href.split('#')[0];
+    window.localStorage.setItem(url, Blockly.Xml.domToText(xml));
+  }
+};
+
+/**
+ * Bind the localStorage backup function to the unload event.
+ * @param {Blockly.WorkspaceSvg=} opt_workspace Workspace.
+ */
+BlocklyStorage.backupOnUnload = function(opt_workspace) {
+  var workspace = opt_workspace || Blockly.getMainWorkspace();
+  window.addEventListener('unload',
+      function() {BlocklyStorage.backupBlocks_(workspace);}, false);
+};
+
+/**
+ * Restore code blocks from localStorage.
+ * @param {Blockly.WorkspaceSvg=} opt_workspace Workspace.
+ */
+BlocklyStorage.restoreBlocks = function(opt_workspace) {
+  var url = window.location.href.split('#')[0];
+  if ('localStorage' in window &amp;&amp; window.localStorage[url]) {
+    var workspace = opt_workspace || Blockly.getMainWorkspace();
+    var xml = Blockly.Xml.textToDom(window.localStorage[url]);
+    Blockly.Xml.domToWorkspace(xml, workspace);
+  }
+};
+
+/**
+ * Save blocks to database and return a link containing key to XML.
+ * @param {Blockly.WorkspaceSvg=} opt_workspace Workspace.
+ */
+BlocklyStorage.link = function(opt_workspace) {
+  var workspace = opt_workspace || Blockly.getMainWorkspace();
+  var xml = Blockly.Xml.workspaceToDom(workspace);
+  var data = Blockly.Xml.domToText(xml);
+  BlocklyStorage.makeRequest_('/storage', 'xml', data, workspace);
+};
+
+/**
+ * Retrieve XML text from database using given key.
+ * @param {string} key Key to XML, obtained from href.
+ * @param {Blockly.WorkspaceSvg=} opt_workspace Workspace.
+ */
+BlocklyStorage.retrieveXml = function(key, opt_workspace) {
+  var workspace = opt_workspace || Blockly.getMainWorkspace();
+  BlocklyStorage.makeRequest_('/storage', 'key', key, workspace);
+};
+
+/**
+ * Global reference to current AJAX request.
+ * @type {XMLHttpRequest}
+ * @private
+ */
+BlocklyStorage.httpRequest_ = null;
+
+/**
+ * Fire a new AJAX request.
+ * @param {string} url URL to fetch.
+ * @param {string} name Name of parameter.
+ * @param {string} content Content of parameter.
+ * @param {!Blockly.WorkspaceSvg} workspace Workspace.
+ * @private
+ */
+BlocklyStorage.makeRequest_ = function(url, name, content, workspace) {
+  if (BlocklyStorage.httpRequest_) {
+    // AJAX call is in-flight.
+    BlocklyStorage.httpRequest_.abort();
+  }
+  BlocklyStorage.httpRequest_ = new XMLHttpRequest();
+  BlocklyStorage.httpRequest_.name = name;
+  BlocklyStorage.httpRequest_.onreadystatechange =
+      BlocklyStorage.handleRequest_;
+  BlocklyStorage.httpRequest_.open('POST', url);
+  BlocklyStorage.httpRequest_.setRequestHeader('Content-Type',
+      'application/x-www-form-urlencoded');
+  BlocklyStorage.httpRequest_.send(name + '=' + encodeURIComponent(content));
+  BlocklyStorage.httpRequest_.workspace = workspace;
+};
+
+/**
+ * Callback function for AJAX call.
+ * @private
+ */
+BlocklyStorage.handleRequest_ = function() {
+  if (BlocklyStorage.httpRequest_.readyState == 4) {
+    if (BlocklyStorage.httpRequest_.status != 200) {
+      BlocklyStorage.alert(BlocklyStorage.HTTPREQUEST_ERROR + '\n' +
+          'httpRequest_.status: ' + BlocklyStorage.httpRequest_.status);
+    } else {
+      var data = BlocklyStorage.httpRequest_.responseText.trim();
+      if (BlocklyStorage.httpRequest_.name == 'xml') {
+        window.location.hash = data;
+        BlocklyStorage.alert(BlocklyStorage.LINK_ALERT.replace('%1',
+            window.location.href));
+      } else if (BlocklyStorage.httpRequest_.name == 'key') {
+        if (!data.length) {
+          BlocklyStorage.alert(BlocklyStorage.HASH_ERROR.replace('%1',
+              window.location.hash));
+        } else {
+          BlocklyStorage.loadXml_(data, BlocklyStorage.httpRequest_.workspace);
+        }
+      }
+      BlocklyStorage.monitorChanges_(BlocklyStorage.httpRequest_.workspace);
+    }
+    BlocklyStorage.httpRequest_ = null;
+  }
+};
+
+/**
+ * Start monitoring the workspace.  If a change is made that changes the XML,
+ * clear the key from the URL.  Stop monitoring the workspace once such a
+ * change is detected.
+ * @param {!Blockly.WorkspaceSvg} workspace Workspace.
+ * @private
+ */
+BlocklyStorage.monitorChanges_ = function(workspace) {
+  var startXmlDom = Blockly.Xml.workspaceToDom(workspace);
+  var startXmlText = Blockly.Xml.domToText(startXmlDom);
+  function change() {
+    var xmlDom = Blockly.Xml.workspaceToDom(workspace);
+    var xmlText = Blockly.Xml.domToText(xmlDom);
+    if (startXmlText != xmlText) {
+      window.location.hash = '';
+      workspace.removeChangeListener(bindData);
+    }
+  }
+  var bindData = workspace.addChangeListener(change);
+};
+
+/**
+ * Load blocks from XML.
+ * @param {string} xml Text representation of XML.
+ * @param {!Blockly.WorkspaceSvg} workspace Workspace.
+ * @private
+ */
+BlocklyStorage.loadXml_ = function(xml, workspace) {
+  try {
+    xml = Blockly.Xml.textToDom(xml);
+  } catch (e) {
+    BlocklyStorage.alert(BlocklyStorage.XML_ERROR + '\nXML: ' + xml);
+    return;
+  }
+  // Clear the workspace to avoid merge.
+  workspace.clear();
+  Blockly.Xml.domToWorkspace(xml, workspace);
+};
+
+/**
+ * Present a text message to the user.
+ * Designed to be overridden if an app has custom dialogs, or a butter bar.
+ * @param {string} message Text to alert.
+ */
+BlocklyStorage.alert = function(message) {
+  window.alert(message);
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:43 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+  <category name="TEDD Category">
+    <block type="tedd_helloworld">
+      <field name="choose">drazen</field>
+    </block>
+  </category>
+</xml>

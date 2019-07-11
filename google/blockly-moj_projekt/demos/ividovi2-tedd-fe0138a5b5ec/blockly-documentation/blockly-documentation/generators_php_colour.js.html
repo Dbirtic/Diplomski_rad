@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: generators/php/colour.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: generators/php/colour.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @license
+ * Visual Blocks Language
+ *
+ * Copyright 2015 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Generating PHP for colour blocks.
+ * @author daarond@gmail.com (Daaron Dwyer)
+ */
+'use strict';
+
+goog.provide('Blockly.PHP.colour');
+
+goog.require('Blockly.PHP');
+
+
+Blockly.PHP['colour_picker'] = function(block) {
+  // Colour picker.
+  var code = '\'' + block.getFieldValue('COLOUR') + '\'';
+  return [code, Blockly.PHP.ORDER_ATOMIC];
+};
+
+Blockly.PHP['colour_random'] = function(block) {
+  // Generate a random colour.
+  var functionName = Blockly.PHP.provideFunction_(
+      'colour_random',
+      [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ + '() {',
+        '  return \'#\' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), ' +
+            '6, \'0\', STR_PAD_LEFT);',
+        '}']);
+  var code = functionName + '()';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+Blockly.PHP['colour_rgb'] = function(block) {
+  // Compose a colour from RGB components expressed as percentages.
+  var red = Blockly.PHP.valueToCode(block, 'RED',
+      Blockly.PHP.ORDER_COMMA) || 0;
+  var green = Blockly.PHP.valueToCode(block, 'GREEN',
+      Blockly.PHP.ORDER_COMMA) || 0;
+  var blue = Blockly.PHP.valueToCode(block, 'BLUE',
+      Blockly.PHP.ORDER_COMMA) || 0;
+  var functionName = Blockly.PHP.provideFunction_(
+      'colour_rgb',
+      [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          '($r, $g, $b) {',
+        '  $r = round(max(min($r, 100), 0) * 2.55);',
+        '  $g = round(max(min($g, 100), 0) * 2.55);',
+        '  $b = round(max(min($b, 100), 0) * 2.55);',
+        '  $hex = "#";',
+        '  $hex .= str_pad(dechex($r), 2, "0", STR_PAD_LEFT);',
+        '  $hex .= str_pad(dechex($g), 2, "0", STR_PAD_LEFT);',
+        '  $hex .= str_pad(dechex($b), 2, "0", STR_PAD_LEFT);',
+        '  return $hex;',
+        '}']);
+  var code = functionName + '(' + red + ', ' + green + ', ' + blue + ')';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+
+Blockly.PHP['colour_blend'] = function(block) {
+  // Blend two colours together.
+  var c1 = Blockly.PHP.valueToCode(block, 'COLOUR1',
+      Blockly.PHP.ORDER_COMMA) || '\'#000000\'';
+  var c2 = Blockly.PHP.valueToCode(block, 'COLOUR2',
+      Blockly.PHP.ORDER_COMMA) || '\'#000000\'';
+  var ratio = Blockly.PHP.valueToCode(block, 'RATIO',
+      Blockly.PHP.ORDER_COMMA) || 0.5;
+  var functionName = Blockly.PHP.provideFunction_(
+      'colour_blend',
+      [ 'function ' + Blockly.PHP.FUNCTION_NAME_PLACEHOLDER_ +
+          '($c1, $c2, $ratio) {',
+        '  $ratio = max(min($ratio, 1), 0);',
+        '  $r1 = hexdec(substr($c1, 1, 2));',
+        '  $g1 = hexdec(substr($c1, 3, 2));',
+        '  $b1 = hexdec(substr($c1, 5, 2));',
+        '  $r2 = hexdec(substr($c2, 1, 2));',
+        '  $g2 = hexdec(substr($c2, 3, 2));',
+        '  $b2 = hexdec(substr($c2, 5, 2));',
+        '  $r = round($r1 * (1 - $ratio) + $r2 * $ratio);',
+        '  $g = round($g1 * (1 - $ratio) + $g2 * $ratio);',
+        '  $b = round($b1 * (1 - $ratio) + $b2 * $ratio);',
+        '  $hex = "#";',
+        '  $hex .= str_pad(dechex($r), 2, "0", STR_PAD_LEFT);',
+        '  $hex .= str_pad(dechex($g), 2, "0", STR_PAD_LEFT);',
+        '  $hex .= str_pad(dechex($b), 2, "0", STR_PAD_LEFT);',
+        '  return $hex;',
+        '}']);
+  var code = functionName + '(' + c1 + ', ' + c2 + ', ' + ratio + ')';
+  return [code, Blockly.PHP.ORDER_FUNCTION_CALL];
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:44 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

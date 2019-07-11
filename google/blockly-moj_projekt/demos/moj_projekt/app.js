@@ -121,6 +121,18 @@ app.get('/block_factory', function(req, res){
   res.sendFile('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/blockfactory/block-factory_index.html');
 });
 
+app.get('/previous_tedd', function(req, res){
+  // static serving needed files for previous tedd - needs some fixing
+  app.use(serveStatic(path.join(__dirname +'../../ividovi2-tedd-fe0138a5b5ec/google-blockly-e0be7e4/demos/code/')));
+  app.use(serveStatic(path.join(__dirname +'../../ividovi2-tedd-fe0138a5b5ec/google-blockly-e0be7e4/demos/code/style.css')));
+  //app.use(serveStatic(path.join(__dirname +'../../ividovi2-tedd-fe0138a5b5ec/TEDD/')));
+  //app.use(serveStatic('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/ividovi2-tedd-fe0138a5b5ec/TEDD/TEDD_Blocks.js'));
+  //app.use(serveStatic('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/ividovi2-tedd-fe0138a5b5ec/TEDD/TEDD_Blocks_generator.js'));
+
+  // sending previous tedd to the client
+  res.sendFile('C:/Users/Dominik/Desktop/google/blockly-moj_projekt/demos/ividovi2-tedd-fe0138a5b5ec/google-blockly-e0be7e4/demos/code/index_RTRK_test.html');
+});
+
 
 // Get Single Block
 app.get('/blocks/:id', function(req, res){

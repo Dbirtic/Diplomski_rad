@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Toolbox</title>
+<script src = "../../blockly_uncompressed.js"></script>
+<script src="../../blocks/logic.js"></script>
+<script src="../../blocks/loops.js"></script>
+<script src="../../blocks/math.js"></script>
+<script src="../../blocks/text.js"></script>
+<script src="../../blocks/lists.js"></script>
+<script src="../../blocks/colour.js"></script>
+<script src="../../blocks/variables.js"></script>
+<script src="../../blocks/procedures.js"></script>
+
+<script src="../../generators/javascript.js"></script>
+<script src="../../generators/javascript/logic.js"></script>
+<script src="../../generators/javascript/loops.js"></script>
+<script src="../../generators/javascript/math.js"></script>
+<script src="../../generators/javascript/text.js"></script>
+<script src="../../generators/javascript/lists.js"></script>
+<script src="../../generators/javascript/colour.js"></script>
+<script src="../../generators/javascript/variables.js"></script>
+<script src="../../generators/javascript/procedures.js"></script>
+
+<script src="../../msg/messages.js"></script>
+ 
+<script src="../../../TEDD/CoreJSFunctions.js"></script>  
+<script src="../../../TEDD/TEDD_Blocks.js"></script>
+<script src="../../../TEDD/TEDD_Blocks_generator.js"></script>
+<style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+<body>
+  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+    <a href="../index.html">Demos</a> &gt; Toolbox</h1>
+
+  <p>This is a demo of a complex category structure for the toolbox.</p>
+
+  <p>&rarr; More info on the <a href="https://developers.google.com/blockly/guides/configure/web/toolbox">Toolbox</a>&hellip;</p>
+
+  <div id="blocklyDiv" style="height: 600px; width: 800px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <category name="Search" custom="SEARCH"></category>
+	
+	<category name="TEDD Category" colour="%{BKY_LOOPS_HUE}">
+	
+	<block type="tedd_tcttemplate_blank"></block>
+	
+	<block type="import">
+		<field name="import_value">import_time</field>
+	</block>
+	
+	<block type="import_custom">
+		<field name="import_value">custom_import</field>
+	</block>
+	
+	
+	<block type="import_custom">
+      <field name="import_value">Utils.utilities</field>
+      <next>
+        <block type="klema_15">
+          <value name="errorID">
+            <block type="math_number">
+			  <field name="positive_check">TRUE</field>
+              <field name="NUM">0</field>
+            </block>
+          </value>
+        </block>
+      </next>
+    </block>
+	
+    <block type="startanje_ploce">
+      <value name="state">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="errorID">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+	<block type="import_custom">
+      <field name="import_value">Utils.API_Diagnostic</field>
+      <next>
+        <block type="provjera_dtc_statusa">
+          <value name="dtc">
+            <block type="text">
+              <field name="TEXT"></field>
+            </block>
+          </value>
+          <value name="errorID">
+            <block type="math_number">
+              <field name="NUM">0</field>
+            </block>
+          </value>
+        </block>
+      </next>
+    </block>
+	
+    <block type="dodavanje_conditiona">
+      <value name="host">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="condition">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="errorID">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+    <block type="provjera_conditiona">
+      <value name="host">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="condition">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+      <value name="timeout">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="errorID">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+    <block type="klema_30">
+      <value name="errorID">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+    <block type="stanje_ploce">
+      <value name="state">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+      <value name="errorID">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </value>
+    </block>
+	
+	<!-- <block type="tedd_header"></block>	 -->
+	
+	<!-- <block type="tedd_header_int"> -->
+      <!-- <value name="entry_name"> -->
+        <!-- <block type="text"> -->
+          <!-- <field name="TEXT"></field> -->
+        <!-- </block> -->
+      <!-- </value> -->
+      <!-- <value name="int_value"> -->
+        <!-- <block type="math_number"> -->
+          <!-- <field name="NUM">0</field> -->
+        <!-- </block> -->
+      <!-- </value> -->
+    <!-- </block> -->
+	
+	<!-- <block type="tedd_header_string"> -->
+      <!-- <value name="entry_name"> -->
+        <!-- <block type="text"> -->
+          <!-- <field name="TEXT"></field> -->
+        <!-- </block> -->
+      <!-- </value> -->
+      <!-- <value name="string_value"> -->
+        <!-- <block type="text"> -->
+          <!-- <field name="TEXT"></field> -->
+        <!-- </block> -->
+      <!-- </value> -->
+    <!-- </block> -->
+	
+	<!-- <block type="tedd_header_list"> -->
+      <!-- <value name="entry_name"> -->
+        <!-- <block type="text"> -->
+          <!-- <field name="TEXT"></field> -->
+        <!-- </block> -->
+      <!-- </value> -->
+      <!-- <value name="list_value"> -->
+        <!-- <block type="lists_create_with"> -->
+          <!-- <mutation items="2"></mutation> -->
+        <!-- </block> -->
+      <!-- </value> -->
+    <!-- </block> -->
+	
+	<block type="tedd_header_new_item">
+      <value name="entry_name">
+        <block type="text">
+          <field name="TEXT"></field>
+        </block>
+      </value>
+    </block>
+	
+	<!-- <block type="tedd_header"> -->
+    <!-- <mutation items="3"></mutation> -->
+    <!-- <value name="ADD0"> -->
+      <!-- <block type="tedd_header_int"> -->
+        <!-- <value name="entry_name"> -->
+          <!-- <block type="text"> -->
+            <!-- <field name="TEXT">PTC_ID</field> -->
+          <!-- </block> -->
+        <!-- </value> -->
+        <!-- <value name="int_value"> -->
+          <!-- <block type="math_number"> -->
+            <!-- <field name="NUM">0</field> -->
+          <!-- </block> -->
+        <!-- </value> -->
+      <!-- </block> -->
+    <!-- </value> -->
+    <!-- <value name="ADD1"> -->
+      <!-- <block type="tedd_header_string"> -->
+        <!-- <value name="entry_name"> -->
+          <!-- <block type="text"> -->
+            <!-- <field name="TEXT">string_name</field> -->
+          <!-- </block> -->
+        <!-- </value> -->
+        <!-- <value name="string_value"> -->
+          <!-- <block type="text"> -->
+            <!-- <field name="TEXT">string_value</field> -->
+          <!-- </block> -->
+        <!-- </value> -->
+      <!-- </block> -->
+    <!-- </value> -->
+    <!-- <value name="ADD2"> -->
+      <!-- <block type="tedd_header_list"> -->
+        <!-- <value name="entry_name"> -->
+          <!-- <block type="text"> -->
+            <!-- <field name="TEXT">number_list</field> -->
+          <!-- </block> -->
+        <!-- </value> -->
+        <!-- <value name="list_value"> -->
+          <!-- <block type="lists_create_with"> -->
+            <!-- <mutation items="2"></mutation> -->
+            <!-- <value name="ADD0"> -->
+              <!-- <block type="math_number"> -->
+                <!-- <field name="NUM">0</field> -->
+              <!-- </block> -->
+            <!-- </value> -->
+            <!-- <value name="ADD1"> -->
+              <!-- <block type="math_number"> -->
+                <!-- <field name="NUM">0</field> -->
+              <!-- </block> -->
+            <!-- </value> -->
+          <!-- </block> -->
+        <!-- </value> -->
+      <!-- </block> -->
+    <!-- </value> -->
+  <!-- </block> -->
+  
+	  <block type="tedd_header">
+		<mutation items="3"></mutation>
+		<value name="ADD0">
+		  <block type="tedd_header_new_item">
+			<value name="entry_name">
+			  <block type="text">
+				<field name="TEXT">PTC_ID</field>
+			  </block>
+			</value>
+			<value name="entry_value">
+			  <block type="math_number">
+				<field name="NUM">11223344</field>
+			  </block>
+			</value>
+		  </block>
+		</value>
+		<value name="ADD1">
+		  <block type="tedd_header_new_item">
+			<value name="entry_name">
+			  <block type="text">
+				<field name="TEXT">string_name</field>
+			  </block>
+			</value>
+			<value name="entry_value">
+			  <block type="text">
+				<field name="TEXT">string_value</field>
+			  </block>
+			</value>
+		  </block>
+		</value>
+		<value name="ADD2">
+		  <block type="tedd_header_new_item">
+			<value name="entry_name">
+			  <block type="text">
+				<field name="TEXT">list_name</field>
+			  </block>
+			</value>
+			<value name="entry_value">
+			  <block type="lists_create_with">
+				<mutation items="3"></mutation>
+				<value name="ADD0">
+				  <block type="math_number">
+					<field name="NUM">1</field>
+				  </block>
+				</value>
+				<value name="ADD1">
+				  <block type="math_number">
+					<field name="NUM">2</field>
+				  </block>
+				</value>
+				<value name="ADD2">
+				  <block type="math_number">
+					<field name="NUM">3</field>
+				  </block>
+				</value>
+			  </block>
+			</value>
+		  </block>
+		</value>
+	  </block>
+	
+	</category>
+  
+    <sep></sep>
+  </xml>
+
+  <script>
+    var workspace = Blockly.inject('blocklyDiv',
+        {media: '../../media/',
+         toolbox: document.getElementById('toolbox')});
+  </script>
+
+</body>
+</html>

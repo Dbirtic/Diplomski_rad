@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/options.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/options.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @license
+ * Visual Blocks Editor
+ *
+ * Copyright 2016 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @fileoverview Object that controls settings for the workspace.
+ * @author fenichel@google.com (Rachel Fenichel)
+ */
+'use strict';
+
+goog.provide('Blockly.Options');
+
+
+/**
+ * Parse the user-specified options, using reasonable defaults where behaviour
+ * is unspecified.
+ * @param {!Object} options Dictionary of options.  Specification:
+ *   https://developers.google.com/blockly/installation/overview#configuration
+ * @constructor
+ */
+Blockly.Options = function(options) {
+  var readOnly = !!options['readOnly'];
+  if (readOnly) {
+    var languageTree = null;
+    var hasCategories = false;
+    var hasTrashcan = false;
+    var hasCollapse = false;
+    var hasComments = false;
+    var hasDisable = false;
+    var hasSounds = false;
+  } else {
+    var languageTree = Blockly.Options.parseToolboxTree(options['toolbox']);
+    var hasCategories = Boolean(languageTree &amp;&amp;
+        languageTree.getElementsByTagName('category').length);
+    var hasTrashcan = options['trashcan'];
+    if (hasTrashcan === undefined) {
+      hasTrashcan = hasCategories;
+    }
+    var hasCollapse = options['collapse'];
+    if (hasCollapse === undefined) {
+      hasCollapse = hasCategories;
+    }
+    var hasComments = options['comments'];
+    if (hasComments === undefined) {
+      hasComments = hasCategories;
+    }
+    var hasDisable = options['disable'];
+    if (hasDisable === undefined) {
+      hasDisable = hasCategories;
+    }
+    var hasSounds = options['sounds'];
+    if (hasSounds === undefined) {
+      hasSounds = true;
+    }
+  }
+  var hasScrollbars = options['scrollbars'];
+  if (hasScrollbars === undefined) {
+    hasScrollbars = hasCategories;
+  }
+  var hasCss = options['css'];
+  if (hasCss === undefined) {
+    hasCss = true;
+  }
+  var pathToMedia = 'https://blockly-demo.appspot.com/static/media/';
+  if (options['media']) {
+    pathToMedia = options['media'];
+  } else if (options['path']) {
+    // 'path' is a deprecated option which has been replaced by 'media'.
+    pathToMedia = options['path'] + 'media/';
+  }
+
+  this.RTL = !!options['rtl'];
+  this.collapse = hasCollapse;
+  this.comments = hasComments;
+  this.disable = hasDisable;
+  this.readOnly = readOnly;
+  this.maxBlocks = options['maxBlocks'] || Infinity;
+  this.pathToMedia = pathToMedia;
+  this.hasCategories = hasCategories;
+  this.hasScrollbars = hasScrollbars;
+  this.hasTrashcan = hasTrashcan;
+  this.hasSounds = hasSounds;
+  this.hasCss = hasCss;
+  this.languageTree = languageTree;
+  this.gridOptions = Blockly.Options.parseGridOptions_(options);
+  this.zoomOptions = Blockly.Options.parseZoomOptions_(options);
+};
+
+/**
+ * @type {Blockly.Workspace} the parent of the current workspace, or null if
+ *    there is no parent workspace.
+ **/
+Blockly.Options.prototype.parentWorkspace = null;
+
+/**
+ * If set, sets the translation of the workspace to match the scrollbars.
+ * No-op if unset.
+ */
+Blockly.Options.prototype.setMetrics = function(translation) { return; };
+
+/**
+ * Return an object with the metrics required to size the workspace, or null
+ * if unset.
+ * @return {Object} Contains size an position metrics, or null.
+ */
+Blockly.Options.prototype.getMetrics = function() { return null; };
+
+/**
+ * Parse the user-specified zoom options, using reasonable defaults where
+ * behaviour is unspecified.  See zoom documentation:
+ *   https://developers.google.com/blockly/installation/zoom
+ * @param {!Object} options Dictionary of options.
+ * @return {!Object} A dictionary of normalized options.
+ * @private
+ */
+Blockly.Options.parseZoomOptions_ = function(options) {
+  var zoom = options['zoom'] || {};
+  var zoomOptions = {};
+  if (zoom['controls'] === undefined) {
+    zoomOptions.controls = false;
+  } else {
+    zoomOptions.controls = !!zoom['controls'];
+  }
+  if (zoom['wheel'] === undefined) {
+    zoomOptions.wheel = false;
+  } else {
+    zoomOptions.wheel = !!zoom['wheel'];
+  }
+  if (zoom['startScale'] === undefined) {
+    zoomOptions.startScale = 1;
+  } else {
+    zoomOptions.startScale = parseFloat(zoom['startScale']);
+  }
+  if (zoom['maxScale'] === undefined) {
+    zoomOptions.maxScale = 3;
+  } else {
+    zoomOptions.maxScale = parseFloat(zoom['maxScale']);
+  }
+  if (zoom['minScale'] === undefined) {
+    zoomOptions.minScale = 0.3;
+  } else {
+    zoomOptions.minScale = parseFloat(zoom['minScale']);
+  }
+  if (zoom['scaleSpeed'] === undefined) {
+    zoomOptions.scaleSpeed = 1.2;
+  } else {
+    zoomOptions.scaleSpeed = parseFloat(zoom['scaleSpeed']);
+  }
+  return zoomOptions;
+};
+
+/**
+ * Parse the user-specified grid options, using reasonable defaults where
+ * behaviour is unspecified. See grid documentation:
+ *   https://developers.google.com/blockly/installation/grid
+ * @param {!Object} options Dictionary of options.
+ * @return {!Object} A dictionary of normalized options.
+ * @private
+ */
+Blockly.Options.parseGridOptions_ = function(options) {
+  var grid = options['grid'] || {};
+  var gridOptions = {};
+  gridOptions.spacing = parseFloat(grid['spacing']) || 0;
+  gridOptions.colour = grid['colour'] || '#888';
+  gridOptions.length = parseFloat(grid['length']) || 1;
+  gridOptions.snap = gridOptions.spacing > 0 &amp;&amp; !!grid['snap'];
+  return gridOptions;
+};
+
+/**
+ * Parse the provided toolbox tree into a consistent DOM format.
+ * @param {Node|string} tree DOM tree of blocks, or text representation of same.
+ * @return {Node} DOM tree of blocks, or null.
+ */
+Blockly.Options.parseToolboxTree = function(tree) {
+  if (tree) {
+    if (typeof tree != 'string') {
+      if (typeof XSLTProcessor == 'undefined' &amp;&amp; tree.outerHTML) {
+        // In this case the tree will not have been properly built by the
+        // browser. The HTML will be contained in the element, but it will
+        // not have the proper DOM structure since the browser doesn't support
+        // XSLTProcessor (XML -> HTML). This is the case in IE 9+.
+        tree = tree.outerHTML;
+      } else if (!(tree instanceof Element)) {
+        tree = null;
+      }
+    }
+    if (typeof tree == 'string') {
+      tree = Blockly.Xml.textToDom(tree);
+    }
+  } else {
+    tree = null;
+  }
+  return tree;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Blockly.Block.html">Block</a></li><li><a href="Blockly.BlockSvg.html">BlockSvg</a></li><li><a href="Blockly.Bubble.html">Bubble</a></li><li><a href="Blockly.Comment.html">Comment</a></li><li><a href="Blockly.Connection.html">Connection</a></li><li><a href="Blockly.ConnectionDB.html">ConnectionDB</a></li><li><a href="Blockly.Events.Abstract.html">Abstract</a></li><li><a href="Blockly.Events.Change.html">Change</a></li><li><a href="Blockly.Events.Create.html">Create</a></li><li><a href="Blockly.Events.Delete.html">Delete</a></li><li><a href="Blockly.Events.Move.html">Move</a></li><li><a href="Blockly.Events.Ui.html">Ui</a></li><li><a href="Blockly.Field.html">Field</a></li><li><a href="Blockly.FieldAngle.html">FieldAngle</a></li><li><a href="Blockly.FieldCheckbox.html">FieldCheckbox</a></li><li><a href="Blockly.FieldColour.html">FieldColour</a></li><li><a href="Blockly.FieldDate.html">FieldDate</a></li><li><a href="Blockly.FieldDropdown.html">FieldDropdown</a></li><li><a href="Blockly.FieldImage.html">FieldImage</a></li><li><a href="Blockly.FieldLabel.html">FieldLabel</a></li><li><a href="Blockly.FieldTextInput.html">FieldTextInput</a></li><li><a href="Blockly.FieldVariable.html">FieldVariable</a></li><li><a href="Blockly.Flyout.html">Flyout</a></li><li><a href="Blockly.Generator.html">Generator</a></li><li><a href="Blockly.Icon.html">Icon</a></li><li><a href="Blockly.Input.html">Input</a></li><li><a href="Blockly.Mutator.html">Mutator</a></li><li><a href="Blockly.Names.html">Names</a></li><li><a href="Blockly.Options.html">Options</a></li><li><a href="Blockly.Scrollbar.html">Scrollbar</a></li><li><a href="Blockly.ScrollbarPair.html">ScrollbarPair</a></li><li><a href="Blockly.Toolbox.html">Toolbox</a></li><li><a href="Blockly.Toolbox.TreeControl.html">TreeControl</a></li><li><a href="Blockly.Toolbox.TreeNode.html">TreeNode</a></li><li><a href="Blockly.Toolbox.TreeSeparator.html">TreeSeparator</a></li><li><a href="Blockly.Trashcan.html">Trashcan</a></li><li><a href="Blockly.Warning.html">Warning</a></li><li><a href="Blockly.Workspace.html">Workspace</a></li><li><a href="Blockly.WorkspaceSvg.html">WorkspaceSvg</a></li><li><a href="Blockly.ZoomControls.html">ZoomControls</a></li><li><a href="goog.dom.DomHelper.html">DomHelper</a></li><li><a href="goog.i18n.BidiFormatter.html">BidiFormatter</a></li><li><a href="goog.inherits-tempCtor.html">tempCtor</a></li><li><a href="goog.soy.data.SanitizedContent.html">SanitizedContent</a></li><li><a href="goog.string.StringBuffer.html">StringBuffer</a></li><li><a href="Slider.html">Slider</a></li><li><a href="soy.$$augmentMap-TempCtor.html">TempCtor</a></li><li><a href="soy.StringBuilder.html">StringBuilder</a></li><li><a href="soydata.$$makeSanitizedContentFactory_-InstantiableCtor.html">InstantiableCtor</a></li><li><a href="soydata.SanitizedCss.html">SanitizedCss</a></li><li><a href="soydata.SanitizedHtml.html">SanitizedHtml</a></li><li><a href="soydata.SanitizedHtmlAttribute.html">SanitizedHtmlAttribute</a></li><li><a href="soydata.SanitizedJs.html">SanitizedJs</a></li><li><a href="soydata.SanitizedJsStrChars.html">SanitizedJsStrChars</a></li><li><a href="soydata.SanitizedUri.html">SanitizedUri</a></li><li><a href="soydata.UnsanitizedText.html">UnsanitizedText</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Code">Code</a></li><li><a href="global.html#disableEnableLink">disableEnableLink</a></li><li><a href="global.html#escapeString">escapeString</a></li><li><a href="global.html#fieldNameCheck">fieldNameCheck</a></li><li><a href="global.html#formatChange">formatChange</a></li><li><a href="global.html#getOptTypesFrom">getOptTypesFrom</a></li><li><a href="global.html#getRootBlock">getRootBlock</a></li><li><a href="global.html#IE">IE</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#injectCode">injectCode</a></li><li><a href="global.html#inputNameCheck">inputNameCheck</a></li><li><a href="global.html#mainWorkspace">mainWorkspace</a></li><li><a href="global.html#oldDir">oldDir</a></li><li><a href="global.html#OPERA">OPERA</a></li><li><a href="global.html#Plane">Plane</a></li><li><a href="global.html#previewWorkspace">previewWorkspace</a></li><li><a href="global.html#testCanConnectWithReason_TargetNull">testCanConnectWithReason_TargetNull</a></li><li><a href="global.html#testCheckConnection_Self">testCheckConnection_Self</a></li><li><a href="global.html#UNNAMED">UNNAMED</a></li><li><a href="global.html#updateGenerator">updateGenerator</a></li><li><a href="global.html#updateLanguage">updateLanguage</a></li><li><a href="global.html#updatePreview">updatePreview</a></li><li><a href="global.html#WEBKIT">WEBKIT</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon May 09 2016 20:07:43 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
